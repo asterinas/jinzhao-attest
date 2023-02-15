@@ -1,0 +1,9 @@
+/* Enclave.edl - Top EDL file. */
+
+enclave {
+    include "attestation/common/error.h"
+
+    from "sgx_pthread.edl" import *;
+    from "sgx_tsgxssl.edl" import *;
+    from "attestation.edl" import *;
+};

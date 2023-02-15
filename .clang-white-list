@@ -1,0 +1,10 @@
+ual/common
+ual/utils
+ual/network
+ual/generation
+ual/verification
+ual/include/utils
+ual/include/network
+ual/include/attestation
+ual/include/unified_attestation
+samples

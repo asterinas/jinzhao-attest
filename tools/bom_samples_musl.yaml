@@ -1,0 +1,28 @@
+# include other bom files
+includes: 
+  - base.yaml
+# This excludes will only take effect when copy directories. We will exclude files or dirs with following patterns.
+excludes:
+  - .git
+  - .gitignore
+targets: 
+  - target: /bin
+    copy:
+      - from: ../../build/out
+        files:
+          - app-sample-unified-attestation-dut
+          - app-sample-unified-attestation-generation
+          - app-sample-unified-attestation-verification-untrusted
+  - target: /etc/kubetee
+    copy:
+      - from: ../../deployment/conf/
+        files:
+          - unified_attestation.json
+  - target: /opt/occlum/glibc/lib
+    copy:
+      - from: /usr/local/occlum/x86_64-linux-musl/lib
+        files:
+          - libssl.so.1.1
+          - libcrypto.so.1.1
+          - libcurl.so.4
+          - libprotobuf.so.32

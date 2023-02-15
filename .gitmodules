@@ -1,0 +1,10 @@
+[submodule "ual/external/protobuf-cpp"]
+	path = ual/external/protobuf-cpp
+	url = https://github.com/SOFAEnclave/protobuf-sgx.git
+	branch = v3.21.6
+[submodule "ual/external/cppcodec"]
+	path = ual/external/cppcodec
+	url = https://github.com/tplgy/cppcodec.git
+[submodule "ual/external/rapidjson"]
+	path = ual/external/rapidjson
+	url = https://github.com/Tencent/rapidjson.git

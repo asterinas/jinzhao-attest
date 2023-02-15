@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package kubetee;
+
+option java_package = "com.alipay.kubetee.ual.proto.v1";
+
+////////////////////////////////////////////////////////////////
+/// Cryptography Messages
+////////////////////////////////////////////////////////////////
+
+message AsymmetricKeyPair {
+  string private_key = 1;
+  string public_key = 2;
+}
+
+message SslCredentialsOptions {
+  string root_cert = 1;
+  string private_key = 2;
+  string cert_chain = 3;
+}
+
+/// AES-GCM symmetric encryption/decryption data
+message SymmetricKeyEncrypted {
+  bytes cipher = 1;
+  bytes mac = 2;
+  bytes aad = 3;
+  bytes iv = 4;
+}
+
+/// Digital envelope encryption/decryption data
+message DigitalEnvelopeEncrypted {
+  // symmetric cipher data
+  SymmetricKeyEncrypted aes_cipher = 1;
+  // RSA public encrypted symmetric key
+  bytes encrypted_key = 2;
+  // SHA256 hash value
+  bytes plain_hash = 3;
+  // RSA private key sign the above plain HASH value
+  // The public key in RA report will verify this signature
+  bytes plain_hash_sig = 4;
+}

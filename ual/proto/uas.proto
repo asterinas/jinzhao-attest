@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package kubetee;
+
+option java_package = "com.alipay.kubetee.ual.proto.v1";
+
+////////////////////////////////////////////////////////////////
+/// Unified Attestation Service Messages
+////////////////////////////////////////////////////////////////
+
+message UasHttpRequest {
+  string app_key = 1;
+  string app_secret = 2;
+  string report = 3;
+  string nonce = 4;
+  string biz_id = 5;
+}
+
+message UasHttpResponse {
+  int64 result_code = 1;
+  string result_msg = 2;
+  string uas_report = 3;
+}

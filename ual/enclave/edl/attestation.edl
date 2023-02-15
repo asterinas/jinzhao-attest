@@ -1,0 +1,79 @@
+enclave {
+    include "sgx_urts.h"
+    include "sgx_report.h"
+    include "attestation/common/error.h"
+
+    from "sgx_pthread.edl" import *;
+
+    trusted {
+        public TeeErrorCode ecall_UaGenerateReport(
+            [in,string] const char* report_identity,
+            [in,string] const char* hex_spid,
+            [in] sgx_target_info_t *target_info,
+            [in] sgx_report_data_t *report_data,
+            [out] sgx_report_t *report);
+
+        public TeeErrorCode ecall_UaVerifyReport(
+            [in] sgx_target_info_t *target_info,
+            [in] sgx_report_t *target_report);
+
+        public TeeErrorCode ecall_UaVerifySubReorts(
+            [in, string] const char *reports,
+            [in, string] const char *policy,
+            [out, size=nested_report_max] char *nested_report_json,
+            int nested_report_max, 
+            [out] int* nested_report_len);
+
+        public TeeErrorCode ecall_UaGetPublicKey(
+            [out, size=max] char* public_key_buf,
+            int max,
+            [out] int* public_key_len);
+
+        public TeeErrorCode ecall_TeeRun(
+            [in,size=attr_len] const char* attr_buf,
+            size_t attr_len,
+            [in,size=req_len] const char *req_buf,
+            size_t req_len,
+            [out] char** res_buf,
+            [out]size_t* res_len);
+    };
+
+    untrusted {
+        void ocall_UaPrintMessage(
+            [in, string] const char *message);
+
+        TeeErrorCode ocall_UntrustGenerateAuthReport(
+            [in, string] const char* tee_identity,
+            [in, string] const char* report_type,
+            [in, string] const char* report_hex_nonce,
+            [in, string] const char* report_params,
+            [out, size=auth_report_buf_size] char* auth_report_buf,
+            unsigned int auth_report_buf_size,
+            [out] unsigned int* auth_report_len)
+            allow(ecall_UaGenerateReport, ecall_UaGetPublicKey);
+
+        TeeErrorCode ocall_UntrustedMemoryAlloc(
+            size_t size, [out] char** buf);
+
+        TeeErrorCode ocall_UntrustedMemoryFree(
+            [in] char** buf);
+
+        TeeErrorCode ocall_UntrustedReadBuf(
+            [user_check]const char *ubuf,
+            [out, size=count] char *tbuf,
+            size_t count);
+
+        TeeErrorCode ocall_UntrustedWriteBuf(
+            [user_check] char *ubuf,
+            [in, size=count] const char *tbuf,
+            size_t count);
+
+        TeeErrorCode ocall_ReeRun(
+            [in,size=attr_len] const char* attr_buf,
+            size_t attr_len,
+            [in,size=req_len] const char *req_buf,
+            size_t req_len,
+            [out] char** res_buf,
+            [out]size_t* res_len);
+    };
+};

@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package kubetee;
+
+option java_package = "com.alipay.kubetee.ual.proto.v1";
+
+////////////////////////////////////////////////////////////////
+// This proto file is only used by DCAP workflow internally.
+////////////////////////////////////////////////////////////////
+
+message SgxCpuSvn {
+  string svn = 1;  // svn[SGX_CPUSVN_SIZE=16];
+}
+
+message SgxIsvSvn {
+  int64 svn = 1;  // uint16_t
+}
+
+// Used to describe the PCK Cert for a platform
+message SgxQlPckCertId {
+  // QE id used to identify the platform for PCK Cert Retrieval:
+  // hex string of uint8_t[QE3_ID_SIZE=16]
+  string hex_qe3_id = 1;
+  // platform's raw CPUSVN, hex string of SgxCpuSvn
+  string hex_platform_cpu_svn = 2;
+  // platform's raw PCE ISVSVN, hex string of SgxIsvSvn
+  string hex_platform_pce_isv_svn = 3;
+  // the enccrypted PPID: uint8_t[ENC_PPID_SIZE=384]
+  // If not used, should set it to all hex zero
+  string hex_encrypted_ppid = 4;
+  // crypto algorithm used to encrypt the PPID:
+  // hex string of uint8_t
+  string hex_crypto_suite = 5;
+  // PCE-Version used to generate the encrypted PPID:
+  // hex strinf of uint16_t
+  string hex_pce_id = 6;
+}
+
+// Contains the certification data used to certify
+// the attestation key and in generating a quote.
+message SgxQlConfig {
+  int64 version = 1;
+  // hex string of SgxCpuSvn
+  string hex_cert_cpu_svn = 2;
+  // hex string of SgxIsvSvn
+  string hex_cert_pce_isv_svn = 3;
+  string cert_data = 4; 
+}

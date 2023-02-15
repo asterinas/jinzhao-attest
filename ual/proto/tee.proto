@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package kubetee;
+
+option java_package = "com.alipay.kubetee.ual.proto.v1";
+
+////////////////////////////////////////////////////////////////
+/// UnifiedFunction Messages
+////////////////////////////////////////////////////////////////
+
+/// UnifiedFunction generic parameters
+message UnifiedFunctionParams {
+  string tee_identity = 1;
+  string function_name = 2;
+}
+
+/// Define a default request type for UnifiedFunctions
+message UnifiedFunctionGenericRequest {
+  repeated string argv = 1;
+}
+
+/// Define a default response type for UnifiedFunctions
+message UnifiedFunctionGenericResponse {
+  repeated string result = 1;
+}

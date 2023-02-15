@@ -1,0 +1,7 @@
+*.pb.cc
+*.pb.h
+*.grpc.pb.cc
+*.grpc.pb.h
+external
+build
+ual/verification/platforms/sgx2/qvl
