@@ -123,24 +123,16 @@ libcurl_build() {
 protobuf_check() {
     [ -f "$INSTALLDIR/lib/libprotobuf.so.32" ] || \
     [ -f "$INSTALLDIR/lib64/libprotobuf.so.32" ] || \
-    [ -f "/usr/local/lib64/libprotobuf.so.32" ] || \
+    [ -f "/usr/lib/x86_64-linux-gnu/libprotobuf.so.32" ] || \
     return 1
 }
 
 protobuf_build() {
-    local install_prefix_opt="-DCMAKE_INSTALL_PREFIX=$INSTALLDIR"
-    local install_lib_dir="$INSTALLDIR"
-    # For hyperenclave base image environment specially
-    if [ -e "/opt/intel/sgxsdk/bin/x64/sgx_sign_hyper" ] ; then
-        install_prefix_opt=""
-        install_lib_dir="/usr/local"
-    fi
-
     echo "======== Building protobuf ... ========" && \
     cd $DEPSDIR/$GRPCDIR/third_party/protobuf/cmake && \
     rm -rf build && mkdir -p build && cd build && \
     cmake ../ \
-        $install_prefix_opt \
+        -DCMAKE_INSTALL_PREFIX=$INSTALLDIR \
         -Dprotobuf_BUILD_TESTS=OFF       \
         -DBUILD_SHARED_LIBS=TRUE         \
         -DCMAKE_CXX_FLAGS="-fPIC -pie"   \
@@ -148,9 +140,6 @@ protobuf_build() {
         -DCMAKE_BUILD_TYPE=Release &&    \
     make -j && \
     make install
-    # For the same path in bom file
-    [ "$install_lib_dir" != "$INSTALLDIR" ] && \
-    cp $install_lib_dir/lib64/libprotobuf.so.32 $INSTALLDIR/lib64/
 }
 
 cares_check() {

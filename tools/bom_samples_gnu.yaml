@@ -24,6 +24,6 @@ targets:
           - libssl.so.1.1
           - libcrypto.so.1.1
           - libcurl.so.4
-      - from: /usr/lib64
+      - from: /usr/lib/x86_64-linux-gnu/
         files:
           - libprotobuf.so.32

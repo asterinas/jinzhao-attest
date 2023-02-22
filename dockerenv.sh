@@ -94,11 +94,11 @@ esac
 elif [ "$ENVTYPE" == "occlum" ] ; then
 case "$TEETYPE" in
     sgx1-epid)
-        IMAGE="occlum:0.19.0-ubuntu18.04"
+        IMAGE="occlum/occlum:0.19.0-ubuntu18.04"
         TEE_DEVICES="$DEVICE_SGX1"
         ;;
     sgx2-dcap)
-        IMAGE="occlum:0.29.3-ubuntu20.04"
+        IMAGE="occlum/occlum:0.29.3-ubuntu20.04"
         TEE_DEVICES="$DEVICE_SGX2"
         TEE_VOLUMES="$VOLUME_SGX2"
         ;;

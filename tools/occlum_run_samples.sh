@@ -27,10 +27,14 @@ if [ "$ACTIONS" == "all" -o "$ACTIONS" == "build" ] ; then
       --file ${THISDIR}/bom_samples_${OCCLUM_LIBC}.yaml \
       --root ./image
 
+  new_json="$(jq '.env.default += ["LD_LIBRARY_PATH=/opt/occlum/glibc/lib"]' Occlum.json)" && \
+  echo "${new_json}" > Occlum.json
+
   # Add PCCS env
   if [ -n "$UA_ENV_PCCS_URL" ] ; then
-    new_json="$(jq .env.default=[\"UA_ENV_PCCS_URL=$UA_ENV_PCCS_URL\"] Occlum.json)" && \
+    new_json="$(jq .env.default+=[\"UA_ENV_PCCS_URL=$UA_ENV_PCCS_URL\"] Occlum.json)" && \
     echo "${new_json}" > Occlum.json
+    echo "{\"pccs_url\":\"$UA_ENV_PCCS_URL\", \"use_secure_cert\":false}" > /etc/sgx_default_qcnl.conf
   fi
 
   occlum build
