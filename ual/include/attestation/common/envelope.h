@@ -11,6 +11,8 @@
 
 using kubetee::DigitalEnvelopeEncrypted;
 
+extern const char kDefaultEnvelopeName[];
+
 namespace kubetee {
 namespace common {
 
@@ -18,7 +20,7 @@ class DigitalEnvelope {
  public:
   explicit DigitalEnvelope(const std::string& name) : name_(name) {}
   explicit DigitalEnvelope(const char* name) : name_(name) {}
-  DigitalEnvelope() : name_("Enclave") {}  // with default envelope name
+  DigitalEnvelope() : name_(kDefaultEnvelopeName) {}
 
   // Before decrypt, you need to prepare the plain text and public key
   // AES AAD and IV is optional. The default AAD is envelope name, and

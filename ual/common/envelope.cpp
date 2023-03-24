@@ -17,6 +17,8 @@
 
 #include "attestation/common/envelope.h"
 
+const char kDefaultEnvelopeName[] = "Enclave";
+
 namespace kubetee {
 namespace common {
 
