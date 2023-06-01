@@ -16,7 +16,7 @@ namespace attestation {
 ///   The higher 32 bytes will be filled by public key hash in enclave.
 /// Case 2: Just use the user data as binray report data
 ///
-TeeErrorCode AttestationGeneratorInterface::PrepareSgxReportData(
+TeeErrorCode AttestationGeneratorInterface::PrepareReportData(
     const UaReportGenerationParameters& param,
     uint8_t* report_data_buf,
     size_t report_data_len) {

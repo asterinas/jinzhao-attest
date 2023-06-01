@@ -33,7 +33,7 @@ if(BUILD_MERGED_LIBS STREQUAL "OFF")
         SET(UAL_LIBS_LINK -lua_unetwork -lua_ree -lua_ugeneration -lua_uverification ${UAL_U_LIBS_DEPS})
         SET(UAL_LIBS_NAME ua_unetwork ua_ree ua_ugeneration ua_uverification)
     else()
-        # For OCCLUM or no TEE
+        # For OCCLUM, VMTEE or no TEE
         SET(UAL_LIBS_LINK -lua_unetwork -lua_ugeneration -lua_uverification ${UAL_U_LIBS_DEPS})
         SET(UAL_LIBS_NAME ua_unetwork ua_ugeneration ua_uverification)
     endif()

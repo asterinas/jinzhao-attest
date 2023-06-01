@@ -42,7 +42,7 @@ The following table shows all the TEE platforms we currently support, and the su
 | Intel SGX2               | Yes            | Yes              |
 | HyperEnclave             | Yes            | Yes              |
 | Kunpeng Trustzone        | No             | Yes              |
-| Hygon CSV                | No             | Yes              |
+| Hygon CSV                | Yes            | Yes              |
 
 
 # Quick Start
@@ -76,6 +76,21 @@ For example, in SGX2 platform, you need to register the platform to PCCS,
 and set the PCCS URL in /etc/sgx_default_qcnl.conf and in
 /etc/kubetee/unified_attestation.json (or by environment variable UA_ENV_PCCS_URL).
 For How to setup the PCCS, please refer to [Intel DCAP document](https://github.com/intel/SGXDataCenterAttestationPrimitives/tree/master/QuoteGeneration/pccs).
+
+
+## The other build command examples
+
+```
+# Occlum LibOS build environment for SGX1/SGX2/HyperEnclave
+./dockerenv.sh --init --occlum
+./dockerenv.sh --exec --occlum
+./build.sh --with-samples
+
+# Ubuntu build environment for Hygon CSV VM TEE
+./dockerenv.sh --init --ubuntu --csv
+./dockerenv.sh --exec --ubuntu --csv
+./build.sh --with-samples --envtype VMTEE --teetype CSV
+```
 
 ## Run the sample code
 

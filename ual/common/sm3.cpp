@@ -32,16 +32,34 @@ TeeErrorCode SM3Crypto::calHash(const std::string& message, std::string* hash) {
     return TEE_ERROR_CRYPTO_SM3_UPDATE;
   }
 
-  unsigned int max_hash_size = 128;
-  unsigned char hash_buf[max_hash_size];
-  ret = EVP_DigestFinal_ex(evp_md_ctx_ptr.get(), hash_buf, &max_hash_size);
+  unsigned int out_hash_size = 0;
+  unsigned char hash_buf[SM3_MAX_LEN];
+  ret = EVP_DigestFinal_ex(evp_md_ctx_ptr.get(), hash_buf, &out_hash_size);
   if (ret != evp_success) {
     ELOG_ERROR("EVP_DigestFinal_ex Error, ret = %d", ret);
     return TEE_ERROR_CRYPTO_SM3_FINAL;
   }
-  std::string hash_str((const char*)hash_buf, max_hash_size);
+  std::string hash_str((const char*)hash_buf, out_hash_size);
   hash->assign(hash_str);
 
+  return TEE_SUCCESS;
+}
+
+TeeErrorCode SM3Crypto::calHash(const char* data,
+                                size_t len,
+                                char* hash,
+                                size_t expected_size) {
+  TEE_CHECK_VALIDBUF(data, len);
+  std::string message(data, len);
+  std::string msg_hash;
+
+  TEE_CHECK_RETURN(calHash(message, &msg_hash));
+  if (msg_hash.size() != expected_size) {
+    ELOG_ERROR("SM3 hash size is not %ld", expected_size);
+    return TEE_ERROR_CRYPTO_SM3_SIZE;
+  }
+
+  memcpy(hash, msg_hash.data(), expected_size);
   return TEE_SUCCESS;
 }
 

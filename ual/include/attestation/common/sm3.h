@@ -15,9 +15,15 @@
 namespace kubetee {
 namespace common {
 
+#define SM3_MAX_LEN 128
+
 class SM3Crypto {
  public:
   static TeeErrorCode calHash(const std::string& message, std::string* hash);
+  static TeeErrorCode calHash(const char* data,
+                              size_t len,
+                              char* hash,
+                              size_t expected_size);
 };
 }  // namespace common
 }  // namespace kubetee

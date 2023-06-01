@@ -38,8 +38,8 @@ if(ENV_TYPE STREQUAL "SGXSDK")
     )
 endif()
 
-# For Occlum LibOS, one library including genaration and verification
-if(ENV_TYPE STREQUAL "OCCLUM" AND HAS_TEE STREQUAL "OFF")
+# For Occlum LibOS and VMTEE, one library including genaration and verification
+if(ENV_TYPE STREQUAL "OCCLUM" OR ENV_TYPE STREQUAL "VMTEE")
     set(LIB_UAL ual)
     set(UAL_SRCS
         ${UAL_PROTO_SRCS}

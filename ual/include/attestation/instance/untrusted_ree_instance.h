@@ -85,16 +85,16 @@ class ReeInstanceUnknown : public ReeInstanceInterface {
   }
 };
 
-#ifdef ENV_TYPE_OCCLUM
+#ifndef ENV_TYPE_SGXSDK
 #include "attestation/common/uak.h"
 
 // TeeInstanceOcclum for compatbility in Occlum
-class ReeInstanceOcclum : public ReeInstanceInterface {
+class ReeInstanceDummy : public ReeInstanceInterface {
  public:
   TeeErrorCode Initialize(const UaTeeInitParameters& param,
                           std::string* tee_identity) override {
     TEE_UNREFERENCED_PARAMETER(param);
-    tee_identity->assign(kOcclumDummyTeeIdentity);
+    tee_identity->assign(kDummyTeeIdentity);
     return TEE_SUCCESS;
   }
 

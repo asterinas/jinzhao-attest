@@ -8,6 +8,7 @@ some other source code directly, which use the original license.
 - cmake/FindGRPC.cmake: [MIT License](https://github.com/IvanSafonov/grpc-cmake-example/blob/master/LICENSE)
 - ual/verification/platforms/sgx2/qvl: [BSD License](https://github.com/intel/SGXDataCenterAttestationPrimitives/blob/master/License.txt)
 - ual/verification/platforms/csv: [From librats](https://github.com/inclavare-containers/librats)
+- ual/generation/platforms/csv: [MIT License](https://gitee.com/anolis/hygon-devkit/blob/master/LICENSE)
 - ual/verification/platforms/kunpeng: [MulanPSL2](https://gitee.com/openeuler/kunpengsecl/blob/master/LICENSE)
 
 

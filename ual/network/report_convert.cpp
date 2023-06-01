@@ -53,14 +53,33 @@ TeeErrorCode ReportConvert::SgxEpidBgcheckToPassPortReport(
 
 TeeErrorCode ReportConvert::HyperEnclaveBgcheckToPassPortReport(
     kubetee::UnifiedAttestationReport* report) {
-  TEE_LOG_INFO("hyperenclave platform report convert, do nothing");
+  TEE_LOG_DEBUG("hyperenclave platform report convert, do nothing");
   report->set_str_report_type(kUaReportTypePassport);
+  return TEE_SUCCESS;
+}
+
+TeeErrorCode ReportConvert::CsvBgcheckToPassPortReport(
+    kubetee::UnifiedAttestationReport* report) {
+  // Get the chip id from report
+  kubetee::HygonCsvReport csv_report;
+  JSON2PB(report->json_report(), &csv_report);
+
+  // For CSV, the external reference data is HSK and CEK
+  // Get the HSK and CEK from Hygon KDS
+  kubetee::HygonCsvCertChain csv_certs;
+  RaHygonKdsClient hygon_kds_client;
+  TEE_CHECK_RETURN(
+      hygon_kds_client.GetCsvHskCek(csv_report.str_chip_id(), &csv_certs));
+  PB2JSON(csv_certs, csv_report.mutable_json_cert_chain());
+
+  report->set_str_report_type(kUaReportTypePassport);
+  PB2JSON(csv_report, report->mutable_json_report());
   return TEE_SUCCESS;
 }
 
 TeeErrorCode ReportConvert::KunpengBgcheckToPassPortReport(
     kubetee::UnifiedAttestationReport* report) {
-  TEE_LOG_INFO("Huawei Kunpeng platform report convert, do nothing");
+  TEE_LOG_DEBUG("Huawei Kunpeng platform report convert, do nothing");
   report->set_str_report_type(kUaReportTypePassport);
   return TEE_SUCCESS;
 }
@@ -84,6 +103,8 @@ TeeErrorCode ReportConvert::BgcheckToPassport(
     TEE_CHECK_RETURN(SgxEpidBgcheckToPassPortReport(report));
   } else if (platform == kUaPlatformHyperEnclave) {
     TEE_CHECK_RETURN(HyperEnclaveBgcheckToPassPortReport(report));
+  } else if (platform == kUaPlatformCsv) {
+    TEE_CHECK_RETURN(CsvBgcheckToPassPortReport(report));
   } else if (platform == kUaPlatformKunpeng) {
     TEE_CHECK_RETURN(KunpengBgcheckToPassPortReport(report));
   } else {
