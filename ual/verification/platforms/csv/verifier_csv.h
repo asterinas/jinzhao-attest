@@ -12,10 +12,9 @@
 
 #include "attestation/common/bytes.h"
 #include "attestation/common/type.h"
+#include "attestation/platforms/csv.h"
 
 #include "attestation/verification/core/verifier_interface.h"
-
-#include "verification/platforms/csv/csv.h"
 
 namespace kubetee {
 namespace attestation {

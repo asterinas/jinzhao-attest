@@ -109,6 +109,7 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_CRYPTO_SM3_INIT                          TEE_MK_ERROR(0x01B2)
 #define TEE_ERROR_CRYPTO_SM3_UPDATE                        TEE_MK_ERROR(0x01B3)
 #define TEE_ERROR_CRYPTO_SM3_FINAL                         TEE_MK_ERROR(0x01B4)
+#define TEE_ERROR_CRYPTO_SM3_SIZE                          TEE_MK_ERROR(0x01B5)
 
 // Common::Crypto::SM4
 #define TEE_ERROR_CRYPTO_SM4                               TEE_MK_ERROR(0x01C0)
@@ -198,6 +199,11 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_RA_GENERATE_OCCLUM_QUOTE_LEN             TEE_MK_ERROR(0x1045)
 #define TEE_ERROR_RA_GENERATE_OCCLUM_DEVICE_BUSY           TEE_MK_ERROR(0x1046)
 
+#define TEE_ERROR_RA_GENERATE_CSV                          TEE_MK_ERROR(0x1050)
+#define TEE_ERROR_RA_GENERATE_CSV_REPORT_STRUCT            TEE_MK_ERROR(0x1051)
+#define TEE_ERROR_RA_GENERATE_CSV_MMAP                     TEE_MK_ERROR(0x1052)
+#define TEE_ERROR_RA_GENERATE_CSV_VMCALL                   TEE_MK_ERROR(0x1053)
+
 // UnifiedAttestation::TeeInstance
 #define TEE_ERROR_RA_ENCLAVE                               TEE_MK_ERROR(0x1060)
 #define TEE_ERROR_RA_UAK_SET_KEYPAIR                       TEE_MK_ERROR(0x1061)
@@ -220,6 +226,7 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_CURL_RES_UNESCAPE_EMPTY                  TEE_MK_ERROR(0x1087)
 #define TEE_ERROR_CURL_RES_UNESCAPE_FAIL                   TEE_MK_ERROR(0x1088)
 #define TEE_ERROR_CURL_GET_REQUEST                         TEE_MK_ERROR(0x1089)
+#define TEE_ERROR_CURL_INIT                                TEE_MK_ERROR(0x108A)
 #define TEE_ERROR_CURL_UNEXPECTED                          TEE_MK_ERROR(0x108F)
 
 // UnifiedAttestation::EPID::IAS
@@ -243,6 +250,11 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_DCAP_PCCS_UNKNOWN_API_VERSION            TEE_MK_ERROR(0x10A8)
 #define TEE_ERROR_DCAP_PCCS_GET_REQUEST                    TEE_MK_ERROR(0x10A9)
 #define TEE_ERROR_DCAP_PCCS_UNEXPECTED                     TEE_MK_ERROR(0x10AF)
+
+#define TEE_ERROR_HYGON_KDS                                TEE_MK_ERROR(0x10B0)
+#define TEE_ERROR_HYGON_KDS_INVALID_CERT_SIZE              TEE_MK_ERROR(0x10B1)
+#define TEE_ERROR_HYGON_KDS_INVALID_HSK_SIZE               TEE_MK_ERROR(0x10B2)
+#define TEE_ERROR_HYGON_KDS_INVALID_CEK_SIZE               TEE_MK_ERROR(0x10B3)
 
 // UnifiedAttestation::Verification
 #define TEE_ERROR_RA_VERIFY                                TEE_MK_ERROR(0x1110)

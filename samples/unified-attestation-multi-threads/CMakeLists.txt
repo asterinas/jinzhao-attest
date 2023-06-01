@@ -65,7 +65,7 @@ add_untrusted_executable(
     EDL ${CMAKE_CURRENT_SOURCE_DIR}/enclave/enclave.edl
     EDL_SEARCH_PATHS ${EX_EDL_SEARCH_PATHS}
 )
-else() # for OCCLUM
+else()
 add_executable(
     ${SAMPLEAPP}
     ${SRCS}

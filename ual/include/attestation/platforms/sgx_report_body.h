@@ -1,5 +1,5 @@
-#ifndef UAL_INCLUDE_ATTESTATION_COMMON_PLATFORMS_SGX_REPORT_BODY_H_
-#define UAL_INCLUDE_ATTESTATION_COMMON_PLATFORMS_SGX_REPORT_BODY_H_
+#ifndef UAL_INCLUDE_ATTESTATION_PLATFORMS_SGX_REPORT_BODY_H_
+#define UAL_INCLUDE_ATTESTATION_PLATFORMS_SGX_REPORT_BODY_H_
 
 #include <string>
 #include <vector>
@@ -15,7 +15,7 @@ namespace kubetee {
 namespace common {
 namespace platforms {
 
-class ReportBodyParser {
+class SgxReportBodyParser {
  public:
   // Quote/report_body level functions when parse report
   TeeErrorCode ParseReportBody(
@@ -51,4 +51,4 @@ class ReportBodyParser {
 }  // namespace common
 }  // namespace kubetee
 
-#endif  // UAL_INCLUDE_ATTESTATION_COMMON_PLATFORMS_SGX_REPORT_BODY_H_
+#endif  // UAL_INCLUDE_ATTESTATION_PLATFORMS_SGX_REPORT_BODY_H_

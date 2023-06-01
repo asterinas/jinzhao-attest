@@ -5,6 +5,7 @@ WORKDIR="$(basename $CURRDIR)"
 
 ACTION=${1}
 ENVTYPE=${2#"--"} # $2: --sgxsdk|--occlum|--ubuntu
+TEETYPE=${3#"--"} # $2: --sgx1|--sgx2|--hyperenclave|--csv
 
 DEVICE_SGX1="isgx"
 DEVICE_SGX2="sgx_enclave sgx_provision"
@@ -112,7 +113,7 @@ case "$TEETYPE" in
         ;;
 esac
 elif [ "$ENVTYPE" == "ubuntu" ] ; then
-    IMAGE="ubuntu:18.04"
+    IMAGE="antkubetee/kubetee-dev-base:2.0-ubuntu20.04-gprc-1.24.3"
 else
     echo "Unsupported environment type: $ENVTYPE" ; exit 1
 fi

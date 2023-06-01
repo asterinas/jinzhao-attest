@@ -191,6 +191,8 @@ message HygonCsvReport {
   // For Passport type report: Quote and collateral in report
   // The serailized JSON string of the HygonCsvCertChain
   string json_cert_chain = 2 [json_name = "json_cert_chain"];
+  // Save chip id to avoid to parse it from b64_quote when verify report
+  string str_chip_id = 3 [json_name = "str_chip_id"];
 }
 
 /// Hygon CSV report verification collateral about certificates

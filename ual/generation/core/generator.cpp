@@ -18,6 +18,9 @@
 #ifdef TEE_TYPE_SGX1
 #include "generation/platforms/sgx1/untrusted/generator_sgx_epid.h"
 #endif
+#ifdef TEE_TYPE_CSV
+#include "generation/platforms/csv/generator_csv.h"
+#endif
 
 namespace kubetee {
 namespace attestation {
@@ -53,9 +56,13 @@ TeeErrorCode AttestationGenerator::Initialize(const std::string& tee_identity) {
     TEE_LOG_DEBUG("TEE device for SGX1 platform");
 #endif
   } else {
+#ifdef TEE_TYPE_CSV
+    TEE_LOG_DEBUG("Hygon CSV TEE platform");
+#else
 #ifndef SGX_MODE_SIM
     TEE_LOG_ERROR("Unsupported trusted execution environment");
     return TEE_ERROR_UNSUPPORTED_TEE;
+#endif
 #endif
   }
 
@@ -67,6 +74,9 @@ TeeErrorCode AttestationGenerator::Initialize(const std::string& tee_identity) {
 #endif
 #ifdef TEE_TYPE_SGX1
   inner_ = std::make_shared<AttestationGeneratorSgxEpid>();
+#endif
+#ifdef TEE_TYPE_CSV
+  inner_ = std::make_shared<AttestationGeneratorCsv>();
 #endif
 
   TEE_CHECK_RETURN(inner_->Initialize(tee_identity));

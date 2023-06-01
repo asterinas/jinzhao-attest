@@ -10,11 +10,11 @@
 #include "attestation/common/bytes.h"
 #include "attestation/common/error.h"
 #include "attestation/common/log.h"
-#include "attestation/common/platforms/sgx_report_body.h"
 #include "attestation/common/protobuf.h"
 #include "attestation/common/rsa.h"
 #include "attestation/common/scope.h"
 #include "attestation/common/type.h"
+#include "attestation/platforms/sgx_report_body.h"
 
 #include "verification/platforms/sgx2/qvl/include/sgx_dcap_qv_internal.h"
 #include "verification/platforms/sgx2/verifier_sgx_dcap.h"
@@ -91,7 +91,7 @@ TeeErrorCode AttestationVerifierSgxDcap::ParseQuoteReportBody() {
   TEE_CHECK_NULLPTR(pquote);
 
   sgx_report_body_t* report_body = &(pquote->report_body);
-  kubetee::common::platforms::ReportBodyParser report_body_parser;
+  kubetee::common::platforms::SgxReportBodyParser report_body_parser;
   TEE_CHECK_RETURN(
       report_body_parser.ParseReportBody(report_body, &attributes_));
 

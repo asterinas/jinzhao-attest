@@ -42,9 +42,9 @@ const int kUaReportSizeBgcheck = 8192;
 const int kUaReportSizePassport = 20480;
 const int kUaReportSizeUas = 8192;
 
-// when generation ra report for occlum, Eid is not used
+// when generation ra report for occlum/VMTEE, Eid is not used
 // But the interfaces need a eid, so define this dummy one
-const char kOcclumDummyTeeIdentity[] = "1234";
+const char kDummyTeeIdentity[] = "1234";
 
 // Empty TEE identity
 const char kEmptyTeeIdentity[] = "0";

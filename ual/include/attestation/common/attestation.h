@@ -50,9 +50,9 @@ extern const int kUaReportSizeBgcheck;
 extern const int kUaReportSizePassport;
 extern const int kUaReportSizeUas;
 
-// when generation ra report for occlum, Eid is not used
+// when generation ra report for occlum/VMTEE, Eid is not used
 // But the interfaces need a eid, so define this dummy one
-extern const char kOcclumDummyTeeIdentity[];
+extern const char kDummyTeeIdentity[];
 
 // Empty TEE identity
 extern const char kEmptyTeeIdentity[];

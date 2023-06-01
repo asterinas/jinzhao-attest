@@ -6,12 +6,11 @@
 #include "attestation/common/bytes.h"
 #include "attestation/common/error.h"
 #include "attestation/common/log.h"
-#include "attestation/common/platforms/sgx_report_body.h"
 #include "attestation/common/protobuf.h"
 #include "attestation/common/rsa.h"
 #include "attestation/common/scope.h"
 #include "attestation/common/type.h"
-
+#include "attestation/platforms/sgx_report_body.h"
 #include "attestation/verification/core/verifier_interface.h"
 
 namespace kubetee {
@@ -36,7 +35,7 @@ namespace platforms {
 //     sgx_isvfamily_id_t   isv_family_id; // ISV assigned Family ID
 //     sgx_report_data_t    report_data;   // Data provided by the user
 // } sgx_report_body_t;
-TeeErrorCode ReportBodyParser::ParseReportBody(
+TeeErrorCode SgxReportBodyParser::ParseReportBody(
     sgx_report_body_t* report_body,
     kubetee::UnifiedAttestationAttributes* attester_attr) {
   TEE_CHECK_NULLPTR(report_body);
@@ -49,7 +48,7 @@ TeeErrorCode ReportBodyParser::ParseReportBody(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReportBodyParser::ParseReportBodyMRENCLAVE(
+TeeErrorCode SgxReportBodyParser::ParseReportBodyMRENCLAVE(
     sgx_report_body_t* report_body,
     kubetee::UnifiedAttestationAttributes* attester_attr) {
   TEE_CHECK_NULLPTR(report_body);
@@ -59,7 +58,7 @@ TeeErrorCode ReportBodyParser::ParseReportBodyMRENCLAVE(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReportBodyParser::ParseReportBodyMRSIGNER(
+TeeErrorCode SgxReportBodyParser::ParseReportBodyMRSIGNER(
     sgx_report_body_t* report_body,
     kubetee::UnifiedAttestationAttributes* attester_attr) {
   TEE_CHECK_NULLPTR(report_body);
@@ -69,7 +68,7 @@ TeeErrorCode ReportBodyParser::ParseReportBodyMRSIGNER(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReportBodyParser::ParseReportBodyAttributes(
+TeeErrorCode SgxReportBodyParser::ParseReportBodyAttributes(
     sgx_report_body_t* report_body,
     kubetee::UnifiedAttestationAttributes* attester_attr) {
   TEE_CHECK_NULLPTR(report_body);
@@ -93,7 +92,7 @@ TeeErrorCode ReportBodyParser::ParseReportBodyAttributes(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReportBodyParser::ParseReportBodyIsvProd(
+TeeErrorCode SgxReportBodyParser::ParseReportBodyIsvProd(
     sgx_report_body_t* report_body,
     kubetee::UnifiedAttestationAttributes* attester_attr) {
   TEE_CHECK_NULLPTR(report_body);
@@ -102,7 +101,7 @@ TeeErrorCode ReportBodyParser::ParseReportBodyIsvProd(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReportBodyParser::ParseReportBodyIsvSvn(
+TeeErrorCode SgxReportBodyParser::ParseReportBodyIsvSvn(
     sgx_report_body_t* report_body,
     kubetee::UnifiedAttestationAttributes* attester_attr) {
   TEE_CHECK_NULLPTR(report_body);
@@ -111,7 +110,7 @@ TeeErrorCode ReportBodyParser::ParseReportBodyIsvSvn(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReportBodyParser::ParseReportBodyUserData(
+TeeErrorCode SgxReportBodyParser::ParseReportBodyUserData(
     sgx_report_body_t* report_body,
     kubetee::UnifiedAttestationAttributes* attester_attr) {
   TEE_CHECK_NULLPTR(report_body);
@@ -125,7 +124,7 @@ TeeErrorCode ReportBodyParser::ParseReportBodyUserData(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReportBodyParser::ParseReportData(
+TeeErrorCode SgxReportBodyParser::ParseReportData(
     const uint8_t* report_data_buf,
     const size_t report_data_len,
     std::string* export_user_data,

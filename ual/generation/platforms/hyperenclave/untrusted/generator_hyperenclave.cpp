@@ -10,10 +10,10 @@
 
 #include "attestation/common/bytes.h"
 #include "attestation/common/log.h"
-#include "attestation/common/platforms/sgx_report_body.h"
 #include "attestation/common/protobuf.h"
 #include "attestation/common/rsa.h"
 #include "attestation/common/type.h"
+#include "attestation/platforms/sgx_report_body.h"
 #include "attestation/verification/ua_verification.h"
 
 #ifdef ENV_TYPE_SGXSDK
@@ -76,7 +76,7 @@ TeeErrorCode AttestationGeneratorHyperEnclave::GetSgxReport(
   // Prepare report data
   sgx_report_data_t report_data;
   size_t len = sizeof(sgx_report_data_t);
-  TEE_CHECK_RETURN(PrepareSgxReportData(param, report_data.d, len));
+  TEE_CHECK_RETURN(PrepareReportData(param, report_data.d, len));
 
   // Create the sgx report in enclave side
   TeeErrorCode ret = TEE_ERROR_GENERIC;
@@ -91,7 +91,7 @@ TeeErrorCode AttestationGeneratorHyperEnclave::GetSgxReport(
   }
 
   // save the attester attributes
-  kubetee::common::platforms::ReportBodyParser report_body_parser;
+  kubetee::common::platforms::SgxReportBodyParser report_body_parser;
   TEE_CHECK_RETURN(
       report_body_parser.ParseReportBody(&(p_report->body), &attributes_));
   attributes_.set_hex_spid(hex_spid);
@@ -232,7 +232,7 @@ TeeErrorCode AttestationGeneratorHyperEnclave::GetSgxQuote(
   // Use report_data from the parameter directly.
   sgx_report_data_t report_data = {0};
   size_t len = sizeof(sgx_report_data_t);
-  TEE_CHECK_RETURN(PrepareSgxReportData(param, report_data.d, len));
+  TEE_CHECK_RETURN(PrepareReportData(param, report_data.d, len));
   // Replace the higher 32 bytes by HASH UAK public key
   const std::string& ua_public_key = UakPublic();
   if (!ua_public_key.empty()) {
@@ -280,7 +280,7 @@ TeeErrorCode AttestationGeneratorHyperEnclave::GetSgxQuote(
 
   // Parse the attester attributes
   sgx_quote_t* pquote = quote_args.quote.as_quote;
-  kubetee::common::platforms::ReportBodyParser report_body_parser;
+  kubetee::common::platforms::SgxReportBodyParser report_body_parser;
   TEE_CHECK_RETURN(
       report_body_parser.ParseReportBody(&(pquote->report_body), &attributes_));
   attributes_.set_hex_spid(param.others.hex_spid());

@@ -15,8 +15,8 @@ namespace attestation {
 
 /// Static methods
 std::shared_ptr<ReeInstanceInterface> ReeInstance::Inner() {
-#ifdef ENV_TYPE_OCCLUM
-  return std::make_shared<ReeInstanceOcclum>();
+#ifndef ENV_TYPE_SGXSDK
+  return std::make_shared<ReeInstanceDummy>();
 #else
 #ifdef TEE_TYPE_HYPERENCLAVE
   return std::make_shared<ReeInstanceSgx>();
