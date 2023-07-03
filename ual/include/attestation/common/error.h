@@ -189,6 +189,8 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_RA_INVALID_SPID                          TEE_MK_ERROR(0x1012)
 #define TEE_ERROR_RA_SMALLER_REPORT_DATA_BUFFER            TEE_MK_ERROR(0x1013)
 #define TEE_ERROR_RA_HAVE_BOTH_NONCE_AND_USER_DATA         TEE_MK_ERROR(0x1014)
+#define TEE_ERROR_RA_TOO_LONG_NONCE                        TEE_MK_ERROR(0x1015)
+#define TEE_ERROR_RA_TOO_LONG_USER_DATA                    TEE_MK_ERROR(0x1016)
 
 // UnifiedAttestation::Generation::Occlum
 #define TEE_ERROR_RA_GENERATE_OCCLUM                       TEE_MK_ERROR(0x1040)

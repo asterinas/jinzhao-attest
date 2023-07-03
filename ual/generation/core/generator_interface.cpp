@@ -20,43 +20,47 @@ TeeErrorCode AttestationGeneratorInterface::PrepareReportData(
     const UaReportGenerationParameters& param,
     uint8_t* report_data_buf,
     size_t report_data_len) {
-  // Report data may come from nonce or user_data in generation parameters
-  std::string user_data;
-  if (!param.report_hex_nonce.empty() &&
-      !param.others.hex_user_data().empty()) {
-    TEE_LOG_ERROR("Don't support both nonce and user data for SGX like TEE");
-    return TEE_ERROR_RA_HAVE_BOTH_NONCE_AND_USER_DATA;
-  } else if (!param.report_hex_nonce.empty()) {
-    kubetee::common::DataBytes tmp_nonce(param.report_hex_nonce);
-    TEE_CHECK_RETURN(tmp_nonce.FromHexStr().GetError());
-    user_data.assign(RCAST(char*, tmp_nonce.data()), tmp_nonce.size());
-  } else if (!param.others.hex_user_data().empty()) {
-    kubetee::common::DataBytes tmp_user_data(param.others.hex_user_data());
-    TEE_CHECK_RETURN(tmp_user_data.FromHexStr().GetError());
-    user_data.assign(RCAST(char*, tmp_user_data.data()), tmp_user_data.size());
-  }
-
   // Here, we check the size of sgx_report_data_t in case SGX SDK changes it
   if (report_data_len != (2 * kSha256Size)) {
     TEE_LOG_ERROR("Unexpected report data size");
     return TEE_ERROR_RA_REPORT_DATA_SIZE;
   }
-
-  // Assume the user data is binary bytes (maybe hash of some more data)
-  if ((user_data.size() > report_data_len) ||
-      (user_data.size() > USER_DATA_MAX)) {
-    TEE_LOG_ERROR("Too much report data for SGX report");
-    return TEE_ERROR_RA_TOO_MUCH_REPORT_DATA;
+  if (param.report_hex_nonce.size() > 2 * kSha256Size) {
+    TEE_LOG_ERROR("Too long hex nonce string");
+    return TEE_ERROR_RA_TOO_LONG_NONCE;
+  }
+  if (param.others.hex_user_data().size() > 2 * kSha256Size) {
+    TEE_LOG_ERROR("Too long hex user data string");
+    return TEE_ERROR_RA_TOO_LONG_USER_DATA;
+  }
+  if (!param.report_hex_nonce.empty() &&
+      !param.others.hex_user_data().empty()) {
+    TEE_LOG_ERROR("Don't support both nonce and user data");
+    return TEE_ERROR_RA_HAVE_BOTH_NONCE_AND_USER_DATA;
   }
 
-  // Clear the report data
+  // Report data from nonce or user_data, and public key
+  uint8_t report_data[2 * kSha256Size] = {0};
+  memset(report_data, 0, 2 * kSha256Size);
+  if (!param.report_hex_nonce.empty()) {
+    kubetee::common::DataBytes tmp_nonce(param.report_hex_nonce);
+    TEE_CHECK_RETURN(tmp_nonce.FromHexStr().GetError());
+    tmp_nonce.Export(report_data, tmp_nonce.size());
+  }
+  if (!param.others.hex_user_data().empty()) {
+    kubetee::common::DataBytes tmp_user_data(param.others.hex_user_data());
+    TEE_CHECK_RETURN(tmp_user_data.FromHexStr().GetError());
+    tmp_user_data.Export(report_data, tmp_user_data.size());
+  }
+  if (!param.others.pem_public_key().empty()) {
+    kubetee::common::DataBytes tmp_pubkey(param.others.pem_public_key());
+    TEE_CHECK_RETURN(tmp_pubkey.ToSHA256().GetError());
+    tmp_pubkey.Export(report_data + kSha256Size, kSha256Size);
+  }
+
+  // Copy the final report_data
   memset(report_data_buf, 0, report_data_len);
-
-  // Copy user data directly to the beginning of highest 32 bytes.
-  if (user_data.size()) {
-    memcpy(report_data_buf, user_data.data(), user_data.size());
-  }
-
+  memcpy(report_data_buf, RCAST(char*, report_data), 2 * kSha256Size);
   return TEE_SUCCESS;
 }
 

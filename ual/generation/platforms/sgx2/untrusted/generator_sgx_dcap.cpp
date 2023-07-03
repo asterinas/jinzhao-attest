@@ -230,9 +230,8 @@ TeeErrorCode AttestationGeneratorSgxDcap::GetQuote(
   size_t len = sizeof(sgx_report_data_t);
   TEE_CHECK_RETURN(PrepareReportData(param, report_data.d, len));
   // Replace the higher 32 bytes by HASH UAK public key
-  const std::string& ua_public_key = UakPublic();
-  if (!ua_public_key.empty()) {
-    kubetee::common::DataBytes pubkey(ua_public_key);
+  if (param.others.pem_public_key().empty() && !UakPublic().empty()) {
+    kubetee::common::DataBytes pubkey(UakPublic());
     pubkey.ToSHA256().Export(report_data.d + kSha256Size, kSha256Size).Void();
   }
 

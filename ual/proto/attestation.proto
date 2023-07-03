@@ -18,6 +18,8 @@ message UnifiedAttestationReportParams {
   string hex_user_data = 2 [json_name = "hex_user_data"];
   // The JSON serialized string of UnifiedAttestationNestedReports
   string json_nested_reports = 3 [json_name = "json_nested_reports"];
+  // User specified public key instead of UAK to be put into report_data
+  string pem_public_key = 4 [json_name = "pem_public_key"];
   // Service Provider ID for SGX1 only
   string hex_spid = 10 [json_name = "hex_spid"];
 }

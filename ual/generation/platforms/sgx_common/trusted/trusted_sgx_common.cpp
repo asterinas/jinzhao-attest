@@ -44,11 +44,20 @@ TeeErrorCode ecall_UaGenerateReport(const char* report_identity,
     memcpy(report_data->d, hex_report_data.data(), hex_report_data.size());
   }
 
-  // Replace the higher 32 bytes by HASH UAK public key
-  const std::string& ua_public_key = UakPublic();
-  if (!ua_public_key.empty()) {
-    kubetee::common::DataBytes pubkey(ua_public_key);
-    pubkey.ToSHA256().Export(report_data->d + kSha256Size, kSha256Size).Void();
+  // Replace the higher 32 bytes by HASH UAK public key if not specified
+  kubetee::common::DataBytes report_data_pubkey(report_data->d + kSha256Size,
+                                                kSha256Size);
+  std::string empty_pubkey =
+      "00000000000000000000000000000000"
+      "00000000000000000000000000000000";
+  if (report_data_pubkey.ToHexStr().GetStr() == empty_pubkey) {
+    const std::string& ua_public_key = UakPublic();
+    if (!ua_public_key.empty()) {
+      kubetee::common::DataBytes pubkey(ua_public_key);
+      pubkey.ToSHA256()
+          .Export(report_data->d + kSha256Size, kSha256Size)
+          .Void();
+    }
   }
 
   // create the enclave report with target info and report_data

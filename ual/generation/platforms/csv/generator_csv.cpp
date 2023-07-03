@@ -202,9 +202,8 @@ TeeErrorCode AttestationGeneratorCsv::GetQuote(
   TEE_CHECK_RETURN(PrepareReportData(param, report_data_buf,
                                      CSV_ATTESTATION_USER_DATA_SIZE));
   // Replace the higher 32 bytes by HASH UAK public key
-  const std::string& ua_public_key = UakPublic();
-  if (!ua_public_key.empty()) {
-    kubetee::common::DataBytes pubkey(ua_public_key);
+  if (param.others.pem_public_key().empty() && !UakPublic().empty()) {
+    kubetee::common::DataBytes pubkey(UakPublic());
     pubkey.ToSHA256().Export(report_data_buf + kSha256Size, kSha256Size).Void();
   }
 
