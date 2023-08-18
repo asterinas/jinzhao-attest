@@ -10,7 +10,7 @@ option java_package = "com.alipay.kubetee.ual.proto.v1";
 
 /// Special Parameters for different TEE platforms
 message UnifiedAttestationReportParams {
-  // The identity string for report instance which is cached inside TEE.
+  // The identity string for the report instance which is cached inside TEE.
   // It's optional and usually used in Asynchronous processes.
   string str_report_identity = 1 [json_name = "str_report_identity"];
   // The user data in some TEE platforms, Max to 64 Bytes of HEX string.
@@ -18,15 +18,13 @@ message UnifiedAttestationReportParams {
   string hex_user_data = 2 [json_name = "hex_user_data"];
   // The JSON serialized string of UnifiedAttestationNestedReports
   string json_nested_reports = 3 [json_name = "json_nested_reports"];
-  // User specified public key instead of UAK to be put into report_data
-  string pem_public_key = 4 [json_name = "pem_public_key"];
   // Service Provider ID for SGX1 only
   string hex_spid = 10 [json_name = "hex_spid"];
 }
 
 /// Unified Attestation Report
 message UnifiedAttestationReport {
-  // For compatibility and udpate later, current is version "1.0"
+  // For compatibility and update later, the current version is "1.0"
   string str_report_version = 1 [json_name = "str_report_version"];
   // Valid type string: "BackgroundCheck"|"Passport"|"Uas"
   string str_report_type = 2 [json_name = "str_report_type"];
@@ -39,9 +37,9 @@ message UnifiedAttestationReport {
   string json_nested_reports = 9 [json_name = "json_nested_reports"];
 }
 
-/// The nested attester's report verified by main attester locally
-/// So, it only has UnifiedAttestationAttributes as final result.
-/// This means we must trust the main attester firstly.
+/// The nested attester's report was verified by the main attester locally
+/// So, it only has UnifiedAttestationAttributes as the final result.
+/// This means we must trust the main attester.
 message UnifiedAttestationNestedReports {
   // The JSON serialized string of UnifiedAttestationNestedResults
   string json_nested_results = 1 [json_name = "json_nested_results"];
@@ -60,7 +58,7 @@ message UnifiedAttestationAuthReport {
   string pem_public_key = 2 [json_name = "pem_public_key"];
 }
 
-/// Collect all submodule attesters's authentication reports for
+/// Collect all submodule attesters' authentication reports for
 /// main attester local verification together.
 message UnifiedAttestationAuthReports {
   // JSON serialized string of UnifiedAttestationAuthReport 
@@ -69,24 +67,24 @@ message UnifiedAttestationAuthReports {
 
 /// UnifiedAttestationAttributes collect all attributes information
 /// of trusted application from UnifiedAttestationReport format report.
-/// All attributes is optional when used in UnifiedAttestationPolicy. 
-/// The TEE implement decides which attribute is used in repport and policy.
+/// All attributes are optional when used in UnifiedAttestationPolicy. 
+/// The TEE implement decides which attribute is used in the report and policy.
 message UnifiedAttestationAttributes {
-  // The TEE platform, in case some verifier need to verify this.
+  // The TEE platform, in case some verifier needs to verify this.
   string str_tee_platform = 1 [json_name = "str_tee_platform"];
-  // The TEE platform hardware related identity or version
+  // The TEE platform hardware-related identity or version
   string hex_platform_hw_version = 2 [json_name = "hex_platform_hw_version"];
-  // The TEE platform TCB software related version
+  // The TEE platform TCB software-related version
   string hex_platform_sw_version = 3 [json_name = "hex_platform_sw_version"];
-  // The TEE platform security related attribte or flags
+  // The TEE platform security-related attributes or flags
   string hex_secure_flags = 4 [json_name = "hex_secure_flags"];
-  // The measurement of TEE implement internal stuffs
+  // The measurement of TEE implement internal stuff
   string hex_platform_measurement = 5 [json_name = "hex_platform_measurement"];
-  // The measurement of TEE instance boot time stuffs
+  // The measurement of TEE instance boot time stuff
   string hex_boot_measurement = 6 [json_name = "hex_boot_measurement"];
-  // The TEE instance or trust application identity when generate the reprot
+  // The TEE instance or trust application identity when generating the report
   string str_tee_identity = 9 [json_name = "str_tee_identity"];
-  // The static measurement of trust application when load the code
+  // The static measurement of trust application when loading the code
   string hex_ta_measurement = 10 [json_name = "hex_ta_measurement"];
   // The dynamical measurement of trust application code,
   // for example, the real-time measurement of code in secure memory
@@ -98,70 +96,70 @@ message UnifiedAttestationAttributes {
   string hex_prod_id = 13 [json_name = "hex_prod_id"];
   // The minimal ISV SVN of the TEE instance or trust application
   string str_min_isvsvn = 14 [json_name = "str_min_isvsvn"];
-  // The bool string "0" for debugable, "1" for not debugable
+  // The bool string "0" for debuggable, "1" for not debuggable
   string bool_debug_disabled = 15 [json_name = "bool_debug_disabled"];
-  // The user special data for generating attestation report
+  // The user data for generating the attestation report
   string hex_user_data = 20 [json_name = "hex_user_data"];
   // hex string hash or original pem public key
   string hex_hash_or_pem_pubkey = 21 [json_name = "hex_hash_or_pem_pubkey"];
-  // The idenpendent freshness value beside what in user data
+  // The independent freshness value besides what is in user data
   string hex_nonce = 22 [json_name = "hex_nonce"];
   // The service provider id, e.g. use in sgx1, 64 bytes hex string
   string hex_spid = 30 [json_name = "hex_spid"];
 }
 
-/// UnifiedAttestationPolicy is used when verify the attestation report.
+/// UnifiedAttestationPolicy is used when verifying the attestation report.
 /// Both main or nested submodule attester support multi-version of instances.
 message UnifiedAttestationPolicy {
   // Assume one public key is bound to one report, specify it here.
-  // We can also specify the public key or its hash in main or submodule
+  // We can also specify the public key or its hash in the main or submodule
   // UnifiedAttestationAttributes. Public key verification will happen
   // in both two places.
-  // NOTE: if there is submodule attester, we must specify the public key
-  // here to verify the signature of submode attestation result.
+  // NOTE: if there is a submodule attester, we must specify the public key
+  // here to verify the signature of the submodel attestation result.
   string pem_public_key = 1 [json_name = "pem_public_key"];
-  // For main attester
+  // For the main attester
   repeated UnifiedAttestationAttributes main_attributes = 2 [json_name = "main_attributes"];
   // For submodule attesters
   repeated UnifiedAttestationNestedPolicy nested_policies = 3 [json_name = "nested_policies"];
 }
 
-/// Match rulse for nested report verification
+/// Match rules for nested report verification
 message UnifiedAttestationNestedPolicy {
   repeated UnifiedAttestationAttributes sub_attributes = 1 [json_name = "sub_attributes"];
 }
 
 /// UnifiedAttestationReport::json_report for SGX1 EPID BackgroundCheck type
-/// Only quote is sent to verifer for attestation
+/// Only quote is sent to verifier for attestation
 message EpidReport {
   string b64_quote = 1 [json_name = "b64_quote"];
 }
 
 /// UnifiedAttestationReport::json_report for SGX1 EPID Passport type
-/// send the IAS response data for SGX1 EPID attestation
+/// Send the IAS response data for SGX1 EPID attestation
 message IasReport {
-  // The signature is calculated over the entire body of IAS HTTP response.
+  // The signature is calculated over the entire body of the IAS HTTP response.
   string b64_signature = 1 [json_name = "b64_signature"];
   string str_signing_cert = 2 [json_name = "str_signing_cert"];
   string str_advisory_url = 3 [json_name = "str_advisory_url"];
   string str_advisory_ids = 4 [json_name = "str_advisory_ids"];
-  // The entire body of IAS HTTP response in JSON format
+  // The entire body of the IAS HTTP response in JSON format
   string json_response_body = 5 [json_name = "json_response_body"];
 }
 
 /// UnifiedAttestationReport::json_report for SGX2 DCAP
-/// Store the quote and PCCS verfication collaretal for SGX2 DCAP attestation
+/// Store the quote and PCCS verification collateral for SGX2 DCAP attestation
 message DcapReport {
-  // For BackgroundCheck type report: Only quote in report
+  // For BackgroundCheck type report: Only quote in the report
   string b64_quote = 1 [json_name = "b64_quote"];
   // For Passport type report: Quote and collateral in report
-  // The serailized JSON string of the SgxQlQveCollateral
+  // The serialized JSON string of the SgxQlQveCollateral
   string json_collateral = 2 [json_name = "json_collateral"];
 }
 
 /// SGX DCAP quote verification collateral
-/// Get this after generate the quote and add it into report
-/// In this way, the challenger will don't need to connect PCCS any more.
+/// Get this after generating the quote and adding it to the report
+/// In this way, the challenger will don't need to connect PCCS anymore.
 message SgxQlQveCollateral {
   // uint32_t, version = 1. PCK Cert chain is in the Quote.
   int64 version = 1 [json_name = "version"];
@@ -175,7 +173,7 @@ message SgxQlQveCollateral {
 }
 
 /// UnifiedAttestationReport::json_report for HyperEnclave
-/// Only quote is required for HyperEnclave attestation
+/// Only a quote is required for HyperEnclave attestation
 message HyperEnclaveReport {
   string b64_quote = 1 [json_name = "b64_quote"];
 }
@@ -188,18 +186,16 @@ message KunpengReport {
 
 /// UnifiedAttestationReport::json_report for Hygon CSV
 message HygonCsvReport {
-  // For BackgroundCheck type report: Only quote in report
+  // For BackgroundCheck type report: Only quote in the report
   string b64_quote = 1 [json_name = "b64_quote"];
   // For Passport type report: Quote and collateral in report
-  // The serailized JSON string of the HygonCsvCertChain
+  // The serialized JSON string of the HygonCsvCertChain
   string json_cert_chain = 2 [json_name = "json_cert_chain"];
-  // Save chip id to avoid to parse it from b64_quote when verify report
-  string str_chip_id = 3 [json_name = "str_chip_id"];
 }
 
 /// Hygon CSV report verification collateral about certificates
-/// Get this after generate the quote and add it into report
-/// In this way, the challenger will don't need to connect PCCS any more.
+/// Get this after generating the quote and adding it to the report
+/// In this way, the challenger will don't need to connect PCCS anymore.
 message HygonCsvCertChain {
   // The Base64 string of hygon_root_cert_t
   string b64_hsk_cert = 1 [json_name = "b64_hsk_cert"];
