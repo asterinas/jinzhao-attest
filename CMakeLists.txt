@@ -22,7 +22,7 @@ if(ENV_TYPE STREQUAL "OCCLUM" AND OCCLUM_LIBC STREQUAL "musl")
 endif()
 
 # For sample applications and test with based on ULA/USA/UAW
-set(UAL_U_LIBS_DEPS -lcurl -lprotobuf -lcrypto) 
+set(UAL_U_LIBS_DEPS -lcurl -lprotobuf -lssl -lcrypto)
 if(ENV_TYPE STREQUAL "SGXSDK")
     if(TEE_TYPE STREQUAL "SGX2")
         list(APPEND UAL_U_LIBS_DEPS -lsgx_dcap_ql -lsgx_quote_ex)

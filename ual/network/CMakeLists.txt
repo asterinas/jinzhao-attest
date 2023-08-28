@@ -52,7 +52,7 @@ target_include_directories(
     ${OPENSSL_INC_DIR}
 )
 
-set(U_LIBS "-lcurl -lprotobuf -lcrypto")
+set(U_LIBS "-lcurl -lprotobuf -lssl -lcrypto")
 if(TEE_TYPE STREQUAL "SGX2" AND ENV_TYPE STREQUAL "SGXSDK")
     list(APPEND U_LIBS "-lsgx_dcap_ql -lsgx_quote_ex")
 endif()

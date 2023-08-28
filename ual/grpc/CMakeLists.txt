@@ -19,7 +19,7 @@ target_include_directories(
 )
 target_link_libraries(
     ${UNTRUSTED_GRPC_LIB}
-    -lcurl -lprotobuf
+    -lcurl -lssl -lprotobuf
     gRPC::grpc++_reflection
     -Wl,-rpath=.:/usr/lib64:/usr/local/lib:/usr/local/lib64
 )
