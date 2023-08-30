@@ -42,7 +42,14 @@
 #define FALSE	0
 #define TRUE	1
 
+#ifdef _MSC_VER
 #include <stdint.h>
+typedef int32_t	    int_fast32_t;
+typedef int64_t     int_fast64_t;
+#else
+typedef __int32_t	int_fast32_t;
+typedef __int64_t   int_fast64_t;
+#endif
 
 static struct tm    tmGlobal;
 
@@ -83,7 +90,7 @@ static const char gmt[] = "GMT";
 #endif /* !defined TZNAME_MAX */
 
 struct ttinfo {              /* time type information */
-    int32_t tt_gmtoff;  /* UT offset in seconds */
+    int_fast32_t tt_gmtoff;  /* UT offset in seconds */
     int          tt_isdst;   /* used to set tm_isdst */
     int          tt_abbrind; /* abbreviation list index */
     int          tt_ttisstd; /* TRUE if transition is std time */
@@ -92,7 +99,7 @@ struct ttinfo {              /* time type information */
 
 struct lsinfo {              /* leap second information */
     time_t       ls_trans;   /* transition time */
-    int64_t ls_corr;    /* correction to apply */
+    int_fast64_t ls_corr;    /* correction to apply */
 };
 
 struct state {
@@ -139,7 +146,7 @@ struct state {
 #define DAYSPERNYEAR	365
 #define DAYSPERLYEAR	366
 #define SECSPERHOUR	(SECSPERMIN * MINSPERHOUR)
-#define SECSPERDAY	((int32_t) SECSPERHOUR * HOURSPERDAY)
+#define SECSPERDAY	((int_fast32_t) SECSPERHOUR * HOURSPERDAY)
 #define MONSPERYEAR	12
 #define EPOCH_YEAR	1970
 #define EPOCH_WDAY	TM_THURSDAY
@@ -197,15 +204,15 @@ increment_overflow(int *const ip, int j)
 
 
 static struct tm *
-timesub(const time_t *const timep, const int32_t offset,
+timesub(const time_t *const timep, const int_fast32_t offset,
         struct tm *const tmp)
 {
     time_t       tdays;
     int          idays;  /* unsigned would be so 2003 */
-    int64_t rem;
+    int_fast64_t rem;
     int                   y;
     const int *  ip;
-    int64_t corr;
+    int_fast64_t corr;
     int          hit;
 
     corr = 0;
@@ -237,9 +244,9 @@ timesub(const time_t *const timep, const int32_t offset,
         y = newy;
     }
     {
-        int32_t   seconds;
+        int_fast32_t   seconds;
 
-        seconds = (int32_t) tdays * SECSPERDAY;
+        seconds = (int_fast32_t) tdays * SECSPERDAY;
         tdays = seconds / SECSPERDAY;
         rem += seconds - tdays * SECSPERDAY;
     }
@@ -340,7 +347,7 @@ localsub(const time_t *timep, long offset, struct tm *tmp)
     sp = lclptr;
     if (sp == NULL)
     {
-        return timesub(timep,  (int32_t) offset, tmp);
+        return timesub(timep,  (int_fast32_t) offset, tmp);
     }
     //WRONG
     return NULL;

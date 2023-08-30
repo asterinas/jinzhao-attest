@@ -21,16 +21,28 @@ file(GLOB PLATFORM_SGX1_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/sgx1/*.cpp
 # Add the platform special files for HyperEnclave
 file(GLOB PLATFORM_HYEN_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/hyperenclave/*.cpp)
 # Add the platform special files for SGX2 DCAP
-file(GLOB_RECURSE PLATFORM_SGX2_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/sgx2/*.cpp)
-set(PLATFORM_SRC_DIR_SGX2_QVL ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/sgx2/qvl)
+set(PLATFORM_SRC_DIR_SGX2_QV ${UAL_TOP_DIR}/external/dcap/QuoteVerification)
+set(PLATFORM_SRC_DIR_SGX2_QVL ${UAL_TOP_DIR}/external/dcap/QuoteVerification/QVL/Src)
+set(PLATFORM_SRC_DIR_SGX2_QVE ${UAL_TOP_DIR}/external/dcap/QuoteVerification/QvE)
+file(GLOB_RECURSE PLATFORM_SGX2_SRCS_QVL_COMMONS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/sgx2/Utils/*.cpp)
+file(GLOB_RECURSE PLATFORM_SGX2_SRCS_QVL_LIBRARY ${PLATFORM_SRC_DIR_SGX2_QVL}/AttestationLibrary/*.cpp)
+file(GLOB_RECURSE PLATFORM_SGX2_SRCS_QVL_PARSERS ${PLATFORM_SRC_DIR_SGX2_QVL}/AttestationParsers/*.cpp)
+file(GLOB PLATFORM_SGX2_SRCS_VERIFICATION ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/sgx2/*.cpp)
+set(PLATFORM_SGX2_SRCS
+    ${PLATFORM_SRC_DIR_SGX2_QVE}/Enclave/qve.cpp
+    ${PLATFORM_SGX2_SRCS_QVL_COMMONS}
+    ${PLATFORM_SGX2_SRCS_QVL_LIBRARY}
+    ${PLATFORM_SGX2_SRCS_QVL_PARSERS}
+    ${PLATFORM_SGX2_SRCS_VERIFICATION}
+)
 # Add the platform special files for CSV
 file(GLOB_RECURSE PLATFORM_CSV_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/csv/*.cpp)
 # Add the platform special files for Kunpeng
 file(GLOB_RECURSE PLATFORM_KUNPENG_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/kunpeng/*.cpp)
 set(PLATFORM_INCS
     ./
-    ${PLATFORM_SRC_DIR_SGX2_QVL}
-    ${PLATFORM_SRC_DIR_SGX2_QVL}/include
+    ${PLATFORM_SRC_DIR_SGX2_QV}/dcap_quoteverify/inc/
+    ${PLATFORM_SRC_DIR_SGX2_QVE}/Include
     ${PLATFORM_SRC_DIR_SGX2_QVL}/AttestationCommons/include
     ${PLATFORM_SRC_DIR_SGX2_QVL}/AttestationCommons/include/Utils
     ${PLATFORM_SRC_DIR_SGX2_QVL}/AttestationLibrary/include

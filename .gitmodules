@@ -8,3 +8,6 @@
 [submodule "ual/external/rapidjson"]
 	path = ual/external/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
+[submodule "ual/external/dcap"]
+	path = ual/external/dcap
+	url = https://github.com/intel/SGXDataCenterAttestationPrimitives.git

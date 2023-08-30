@@ -13,7 +13,7 @@
 #include "network/pccs_client.h"
 #include "utils/untrusted/untrusted_ua_config.h"
 
-#include "verification/platforms/sgx2/qvl/include/sgx_dcap_qv_internal.h"
+#include "./sgx_dcap_qv_internal.h"
 
 namespace kubetee {
 namespace attestation {

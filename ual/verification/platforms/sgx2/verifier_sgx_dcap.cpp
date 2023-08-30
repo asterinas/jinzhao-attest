@@ -7,6 +7,9 @@
 #include "openssl/err.h"
 #include "openssl/pem.h"
 
+#include "./sgx_qve_header.h"
+#include "./sgx_dcap_qv_internal.h"
+
 #include "attestation/common/bytes.h"
 #include "attestation/common/error.h"
 #include "attestation/common/log.h"
@@ -16,7 +19,6 @@
 #include "attestation/common/type.h"
 #include "attestation/platforms/sgx_report_body.h"
 
-#include "verification/platforms/sgx2/qvl/include/sgx_dcap_qv_internal.h"
 #include "verification/platforms/sgx2/verifier_sgx_dcap.h"
 
 namespace kubetee {

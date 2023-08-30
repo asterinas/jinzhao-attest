@@ -15,7 +15,7 @@
 
 #ifdef ENV_TYPE_SGXSDK
 #include "./sgx_dcap_ql_wrapper.h"
-#include "verification/platforms/sgx2/qvl/include/sgx_dcap_qv_internal.h"
+#include "./sgx_dcap_qv_internal.h"
 #endif
 
 #ifdef ENV_TYPE_OCCLUM
