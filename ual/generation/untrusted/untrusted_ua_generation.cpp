@@ -61,10 +61,14 @@ TeeErrorCode UaGenerateAuthReport(UaReportGenerationParameters* param,
   TEE_CHECK_RETURN(generator.GenerateReport(*param, report));
 
   std::string* p_public_key = auth->mutable_pem_public_key();
-  using kubetee::attestation::ReeInstance;
-  TEE_CHECK_RETURN(
-      ReeInstance::TeePublicKey(param->tee_identity, p_public_key));
-  TEE_LOG_TRACE("Enclave Public Key:\n%s", p_public_key->c_str());
+  const std::string& param_public_key = param->others.pem_public_key();
+  if (param_public_key.empty()) {
+    TEE_CHECK_RETURN(kubetee::attestation::ReeInstance::TeePublicKey(
+        param->tee_identity, p_public_key));
+  } else {
+    p_public_key->assign(param_public_key);
+  }
+  TEE_LOG_TRACE("AuthReport Public Key:\n%s", p_public_key->c_str());
 
   TEE_LOG_DEBUG("Nested report: %s",
                 param->others.json_nested_reports().c_str());
