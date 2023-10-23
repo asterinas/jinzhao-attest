@@ -10,10 +10,10 @@
 
 #include "attestation/common/bytes.h"
 #include "attestation/common/log.h"
-#include "attestation/common/platforms/sgx_report_body.h"
 #include "attestation/common/protobuf.h"
 #include "attestation/common/rsa.h"
 #include "attestation/common/type.h"
+#include "attestation/platforms/sgx_report_body.h"
 #include "attestation/verification/ua_verification.h"
 
 #ifdef ENV_TYPE_SGXSDK
