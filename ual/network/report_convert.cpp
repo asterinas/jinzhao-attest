@@ -77,6 +77,15 @@ TeeErrorCode ReportConvert::CsvBgcheckToPassPortReport(
   return TEE_SUCCESS;
 }
 
+TeeErrorCode ReportConvert::TdxBgcheckToPassPortReport(
+    kubetee::UnifiedAttestationReport* report) {
+  // TODO
+  TEE_LOG_DEBUG("Intel TDX platform report convert, not Implemented");
+
+  report->set_str_report_type(kUaReportTypePassport);
+  return TEE_SUCCESS;
+}
+
 TeeErrorCode ReportConvert::KunpengBgcheckToPassPortReport(
     kubetee::UnifiedAttestationReport* report) {
   TEE_LOG_DEBUG("Huawei Kunpeng platform report convert, do nothing");

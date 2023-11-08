@@ -13,6 +13,8 @@ elseif(TEE_TYPE STREQUAL "SGX2")
     file(GLOB PLATFORM_SRCS ${PLATFORM_SRC_DIR}/sgx2/*.cpp)
 elseif(TEE_TYPE STREQUAL "CSV")
     file(GLOB PLATFORM_SRCS ${PLATFORM_SRC_DIR}/csv/*.cpp)
+elseif(TEE_TYPE STREQUAL "TDX")
+    file(GLOB PLATFORM_SRCS ${PLATFORM_SRC_DIR}/tdx/*.cpp)
 endif()
 
 # Build the ua_ugeneration library

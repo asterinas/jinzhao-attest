@@ -7,8 +7,8 @@
 #include "openssl/err.h"
 #include "openssl/pem.h"
 
-#include "./sgx_qve_header.h"
 #include "./sgx_dcap_qv_internal.h"
+#include "./sgx_qve_header.h"
 
 #include "attestation/common/bytes.h"
 #include "attestation/common/error.h"

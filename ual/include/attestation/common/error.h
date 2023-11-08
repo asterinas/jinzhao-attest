@@ -343,8 +343,8 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_RA_VERIFY_HYGON_CSV_DATA_SIZE            TEE_MK_ERROR(0x11B9)
 
 // UnifiedAttestation::Verification::Kunpeng
-#define TEE_ERROR_RA_VERIFY_HYGON_KUNPENG                  TEE_MK_ERROR(0x11C0)
-#define TEE_ERROR_RA_VERIFY_HYGON_KUNPENG_REPORT_SIGNATURE TEE_MK_ERROR(0x11C1)
+#define TEE_ERROR_RA_VERIFY_KUNPENG                        TEE_MK_ERROR(0x11C0)
+#define TEE_ERROR_RA_VERIFY_KUNPENG_REPORT_SIGNATURE       TEE_MK_ERROR(0x11C1)
 
 // UnifiedAttestation::Uas::Service
 #define TEE_ERROR_UAS_SERVER                               TEE_MK_ERROR(0x1800)

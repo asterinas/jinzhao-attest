@@ -21,6 +21,9 @@
 #ifdef TEE_TYPE_CSV
 #include "generation/platforms/csv/generator_csv.h"
 #endif
+#ifdef TEE_TYPE_TDX
+#include "generation/platforms/tdx/generator_tdx.h"
+#endif
 
 namespace kubetee {
 namespace attestation {
@@ -58,6 +61,8 @@ TeeErrorCode AttestationGenerator::Initialize(const std::string& tee_identity) {
   } else {
 #ifdef TEE_TYPE_CSV
     TEE_LOG_DEBUG("Hygon CSV TEE platform");
+#elif defined(TEE_TYPE_TDX)
+    TEE_LOG_DEBUG("Intel TDX TEE platform");
 #else
 #ifndef SGX_MODE_SIM
     TEE_LOG_ERROR("Unsupported trusted execution environment");
@@ -77,6 +82,9 @@ TeeErrorCode AttestationGenerator::Initialize(const std::string& tee_identity) {
 #endif
 #ifdef TEE_TYPE_CSV
   inner_ = std::make_shared<AttestationGeneratorCsv>();
+#endif
+#ifdef TEE_TYPE_TDX
+  inner_ = std::make_shared<AttestationGeneratorTdx>();
 #endif
 
   TEE_CHECK_RETURN(inner_->Initialize(tee_identity));

@@ -37,6 +37,8 @@ set(PLATFORM_SGX2_SRCS
 )
 # Add the platform special files for CSV
 file(GLOB_RECURSE PLATFORM_CSV_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/csv/*.cpp)
+# Add the platform special files for TDX
+file(GLOB_RECURSE PLATFORM_TDX_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/tdx/*.cpp)
 # Add the platform special files for Kunpeng
 file(GLOB_RECURSE PLATFORM_KUNPENG_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/kunpeng/*.cpp)
 set(PLATFORM_INCS
@@ -65,6 +67,7 @@ set(U_SRCS
     ${PLATFORM_SGX2_SRCS}
     ${PLATFORM_HYEN_SRCS}
     ${PLATFORM_CSV_SRCS}
+    ${PLATFORM_TDX_SRCS}
     ${PLATFORM_KUNPENG_SRCS}
     ${UNTRUSTED_SRCS}
 )

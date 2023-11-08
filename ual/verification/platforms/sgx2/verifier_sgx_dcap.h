@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "./sgx_error.h"
+#include "./sgx_ql_lib_common.h"
 #include "./sgx_quote_3.h"
 #include "./sgx_report.h"
-#include "./sgx_ql_lib_common.h"
 
 #include "./pccs.pb.h"
 

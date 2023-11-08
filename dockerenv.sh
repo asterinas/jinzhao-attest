@@ -5,7 +5,7 @@ WORKDIR="$(basename $CURRDIR)"
 
 ACTION=${1}
 ENVTYPE=${2#"--"} # $2: --sgxsdk|--occlum|--ubuntu
-TEETYPE=${3#"--"} # $2: --sgx1|--sgx2|--hyperenclave|--csv
+TEETYPE=${3#"--"} # $3: --sgx1|--sgx2|--hyperenclave|--csv|--tdx
 
 DEVICE_SGX1="isgx"
 DEVICE_SGX2="sgx_enclave sgx_provision"

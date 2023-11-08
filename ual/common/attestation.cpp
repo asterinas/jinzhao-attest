@@ -15,6 +15,7 @@ const char kUaPlatformSgxEpid[] = "SGX_EPID";
 const char kUaPlatformSgxDcap[] = "SGX_DCAP";
 const char kUaPlatformHyperEnclave[] = "HyperEnclave";
 const char kUaPlatformCsv[] = "CSV";
+const char kUaPlatformTdx[] = "TDX";
 const char kUaPlatformKunpeng[] = "Kunpeng";
 
 const char kUaReportTypeBgcheck[] = "BackgroundCheck";

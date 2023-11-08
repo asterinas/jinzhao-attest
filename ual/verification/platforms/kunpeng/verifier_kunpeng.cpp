@@ -66,7 +66,7 @@ TeeErrorCode AttestationVerifierKunpeng::VerifyPlatform(
   // Verify the DCAP report signature and status,
   if (!kunpensecl_verify_signature(&report)) {
     ELOG_ERROR("Fail to verify the report signature");
-    return TEE_ERROR_RA_VERIFY_HYGON_KUNPENG_REPORT_SIGNATURE;
+    return TEE_ERROR_RA_VERIFY_KUNPENG_REPORT_SIGNATURE;
   }
 
   ELOG_DEBUG("Verify Kunpeng Platform Successfully!");

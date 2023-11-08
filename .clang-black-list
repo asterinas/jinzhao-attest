@@ -5,3 +5,4 @@
 external
 build
 ual/verification/platforms/sgx2/qvl
+ual/verification/platforms/sgx2/Utils

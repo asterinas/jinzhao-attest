@@ -197,6 +197,11 @@ message HygonCsvReport {
   string str_chip_id = 3 [json_name = "str_chip_id"];
 }
 
+/// UnifiedAttestationReport::json_report for Intel TDX
+message IntelTdxReport {
+  string b64_quote = 1 [json_name = "b64_quote"];
+}
+
 /// Hygon CSV report verification collateral about certificates
 /// Get this after generating the quote and adding it to the report
 /// In this way, the challenger will don't need to connect PCCS anymore.

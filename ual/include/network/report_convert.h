@@ -35,6 +35,8 @@ class ReportConvert {
       kubetee::UnifiedAttestationReport* report);
   static TeeErrorCode CsvBgcheckToPassPortReport(
       kubetee::UnifiedAttestationReport* report);
+  static TeeErrorCode TdxBgcheckToPassPortReport(
+      kubetee::UnifiedAttestationReport* report);
   static TeeErrorCode KunpengBgcheckToPassPortReport(
       kubetee::UnifiedAttestationReport* report);
 };

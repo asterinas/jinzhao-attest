@@ -20,6 +20,7 @@ extern const char kUaPlatformSgxEpid[];
 extern const char kUaPlatformSgxDcap[];
 extern const char kUaPlatformHyperEnclave[];
 extern const char kUaPlatformCsv[];
+extern const char kUaPlatformTdx[];
 extern const char kUaPlatformKunpeng[];
 
 // Unified attestation report type names

@@ -9,6 +9,7 @@
 #include "verification/platforms/kunpeng/verifier_kunpeng.h"
 #include "verification/platforms/sgx1/verifier_sgx_epid.h"
 #include "verification/platforms/sgx2/verifier_sgx_dcap.h"
+#include "verification/platforms/tdx/verifier_tdx.h"
 #include "verification/uas/verifier_uas.h"
 
 namespace kubetee {
@@ -29,6 +30,8 @@ TeeErrorCode AttestationVerifier::Initialize(
       inner_ = std::make_shared<AttestationVerifierSgxDcap>();
     } else if (platform == kUaPlatformCsv) {
       inner_ = std::make_shared<AttestationVerifierCsv>();
+    } else if (platform == kUaPlatformTdx) {
+      inner_ = std::make_shared<AttestationVerifierTdx>();
     } else if (platform == kUaPlatformKunpeng) {
       inner_ = std::make_shared<AttestationVerifierKunpeng>();
     } else {
