@@ -10,7 +10,7 @@
 #include "attestation/common/uak.h"
 #include "attestation/instance/trusted_tee_instance.h"
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 #include "instance/platforms/sgx/trusted/trusted_tee_sgx.h"
 #endif
 
@@ -24,7 +24,7 @@ const char TeeInstance::kDefaultReportCache[] = "default";
 UA_MUTEX_T TeeInstance::enclave_lock_ = UA_MUTEX_INITIALIZER;
 
 std::shared_ptr<TeeInstanceInterface> TeeInstance::Inner() {
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
   return std::make_shared<TeeInstanceSgx>();
 #else
   return std::make_shared<TeeInstanceUnknown>();
@@ -302,7 +302,7 @@ TeeErrorCode TeeInstanceReportCacheSize() {
   return TeeInstance::GetInstance().ReportCacheSize();
 }
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 // Only use the untrusted version of this function in occlum
 TeeErrorCode UaGenerateAuthReport(const UaReportGenerationParameters& param,
                                   kubetee::UnifiedAttestationAuthReport* auth) {

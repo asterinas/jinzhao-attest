@@ -17,7 +17,7 @@ if(TEE_TYPE STREQUAL "")
     endif()
 endif()
 message(STATUS "TEE Type: ${TEE_TYPE}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTEE_TYPE_${TEE_TYPE}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUA_TEE_TYPE_${TEE_TYPE}")
 
 # Check the programming environment
 if(ENV_TYPE STREQUAL "")
@@ -28,7 +28,7 @@ if(ENV_TYPE STREQUAL "")
     endif()
 endif()
 message(STATUS "ENV Type: ${ENV_TYPE}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENV_TYPE_${ENV_TYPE}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUA_ENV_TYPE_${ENV_TYPE}")
 
 # Set the HAS_TEE top flag for later use
 if(NOT TEE_TYPE STREQUAL "NONE" AND ENV_TYPE STREQUAL "SGXSDK")

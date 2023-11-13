@@ -16,10 +16,10 @@
 #include "attestation/platforms/sgx_report_body.h"
 #include "attestation/verification/ua_verification.h"
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 #include "generation/platforms/sgx_common/untrusted/untrusted_sgx_common_ecall.h"
 #endif
-#ifdef ENV_TYPE_OCCLUM
+#ifdef UA_ENV_TYPE_OCCLUM
 #include "attestation/instance/trusted_tee_instance.h"
 #endif
 
@@ -48,7 +48,7 @@ TeeErrorCode AttestationGeneratorSgxEpid::Initialize(
   return TEE_SUCCESS;
 }
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 // Initialize the quote enclave and get the gid for IAS sigRL
 // and the target_info for sgx_create_report
 TeeErrorCode AttestationGeneratorSgxEpid::InitTargetInfo() {
@@ -182,7 +182,7 @@ TeeErrorCode AttestationGeneratorSgxEpid::GetSgxQuote(
 }
 #endif
 
-#ifdef ENV_TYPE_OCCLUM
+#ifdef UA_ENV_TYPE_OCCLUM
 // For Occlum LibOS environment
 TeeErrorCode AttestationGeneratorSgxEpid::SgxDeviceGetGroupID() {
   // sgx_init_quote will be called in ioctl handler
@@ -393,7 +393,7 @@ TeeErrorCode AttestationGeneratorSgxEpid::VerifySubReportsTrusted(
     const kubetee::UnifiedAttestationAuthReports& auth_reports,
     const kubetee::UnifiedAttestationPolicy& policy,
     std::string* results_json) {
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
   std::string tee_identity = std::to_string(enclave_id_);
   TEE_CHECK_RETURN(
       SgxVerifySubReports(tee_identity, auth_reports, policy, results_json));

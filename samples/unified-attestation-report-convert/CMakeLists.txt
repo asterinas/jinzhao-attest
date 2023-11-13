@@ -17,8 +17,8 @@ add_executable(
 
 target_link_libraries(
     ${SAMPLEAPP} ${UA_LINK_OPTIONS}
-    -L${LIBRARY_OUTPUT_PATH}
+    -L${LIBRARY_OUTPUT_PATH} -L/usr/lib64
     -Wl,--start-group  -lual ${UAL_U_LIBS_DEPS} -Wl,--end-group
-    -Wl,-rpath=.:/lib64:/usr/lib:/usr/local/lib
+    -Wl,-rpath=.:/usr/lib64:/lib64:/usr/lib:/usr/local/lib
 )
 add_dependencies(${SAMPLEAPP} ual)

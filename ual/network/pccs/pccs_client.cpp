@@ -26,9 +26,17 @@ PccsClient::PccsClient() {
   pccs_server_url_ = GetPccsUrl();
 }
 
-std::string PccsClient::GetPccsUrl() {
+std::string PccsClient::GetPccsUrl(uint16_t tee_type) {
   std::string url = "https://localhost:8081/sgx/certification/v3/";
-  return UA_ENV_CONF_STR("UA_ENV_PCCS_URL", kUaConfDcapPccsUrl, url);
+  std::string base_url =
+      UA_ENV_CONF_STR("UA_ENV_PCCS_URL", kUaConfDcapPccsUrl, url);
+  if (tee_type == PCCS_TEE_TYPE_TDX) {
+    auto found = base_url.find("/sgx/");
+    if (found != std::string::npos) {
+      base_url = base_url.replace(found, 5, "/tdx/");
+    }
+  }
+  return base_url;
 }
 
 // gets the API version of the configured URL.
@@ -114,7 +122,8 @@ TeeErrorCode PccsClient::GetPckCrlChain(const std::string& ca,
                         pck_crl_issuer_chain);
 }
 
-TeeErrorCode PccsClient::GetTcbInfo(const std::string& hex_fmspc,
+TeeErrorCode PccsClient::GetTcbInfo(uint16_t tee_type,
+                                    const std::string& hex_fmspc,
                                     std::string* tcb_info,
                                     std::string* tcb_info_issuer_chain) {
   // Check input parameters
@@ -124,18 +133,28 @@ TeeErrorCode PccsClient::GetTcbInfo(const std::string& hex_fmspc,
   }
 
   // Initialize https request url
+  std::string url = GetPccsUrl(tee_type);
   std::string api = "tcb?fmspc=";
   api.append(hex_fmspc);
-  return GetPccsElement(pccs_server_url_ + api, "sgx-tcb-info", tcb_info,
-                        tcb_info_issuer_chain);
+  int64_t api_version;
+  TEE_CHECK_RETURN(GetApiVersion(&api_version));
+  if (api_version == 3) {
+    return GetPccsElement(url + api, "sgx-tcb-info", tcb_info,
+                          tcb_info_issuer_chain);
+  } else {
+    return GetPccsElement(url + api, "tcb-info", tcb_info,
+                          tcb_info_issuer_chain);
+  }
 }
 
-TeeErrorCode PccsClient::GetQeIdentity(std::string* qe_identity,
+TeeErrorCode PccsClient::GetQeIdentity(uint16_t tee_type,
+                                       std::string* qe_identity,
                                        std::string* qe_identity_issuer_chain) {
   // Initialize https request url
+  std::string url = GetPccsUrl(tee_type);
   std::string api = "qe/identity";
-  return GetPccsElement(pccs_server_url_ + api, "sgx-enclave-identity",
-                        qe_identity, qe_identity_issuer_chain);
+  return GetPccsElement(url + api, "sgx-enclave-identity", qe_identity,
+                        qe_identity_issuer_chain);
 }
 
 TeeErrorCode PccsClient::GetRootCaCrl(std::string* root_ca_crl) {
@@ -167,7 +186,9 @@ TeeErrorCode PccsClient::GetFmspcCaFromQuote(const std::string& quote,
 }
 
 TeeErrorCode PccsClient::GetCollateral(
-    const std::string& quote, kubetee::SgxQlQveCollateral* quote_collateral) {
+    uint16_t tee_type,
+    const std::string& quote,
+    kubetee::SgxQlQveCollateral* quote_collateral) {
   // get pck_ca hex_fmpsc
   std::string pck_ca;
   std::string hex_fmspc;
@@ -182,15 +203,29 @@ TeeErrorCode PccsClient::GetCollateral(
                      quote_collateral->mutable_pck_crl_issuer_chain()));
   // Set TCBInfo and certchain
   TEE_CHECK_RETURN(
-      GetTcbInfo(hex_fmspc, quote_collateral->mutable_tcb_info(),
+      GetTcbInfo(tee_type, hex_fmspc, quote_collateral->mutable_tcb_info(),
                  quote_collateral->mutable_tcb_info_issuer_chain()));
   // Set QEIdentity and certchain
   TEE_CHECK_RETURN(
-      GetQeIdentity(quote_collateral->mutable_qe_identity(),
+      GetQeIdentity(tee_type, quote_collateral->mutable_qe_identity(),
                     quote_collateral->mutable_qe_identity_issuer_chain()));
   // Set Root CA CRL
   TEE_CHECK_RETURN(GetRootCaCrl(quote_collateral->mutable_root_ca_crl()));
 
+  return TEE_SUCCESS;
+}
+
+TeeErrorCode PccsClient::GetSgxCollateral(
+    const std::string& quote, kubetee::SgxQlQveCollateral* quote_collateral) {
+  TEE_CHECK_RETURN(GetCollateral(PCCS_TEE_TYPE_SGX, quote, quote_collateral));
+  quote_collateral->set_tee_type(PCCS_TEE_TYPE_SGX);
+  return TEE_SUCCESS;
+}
+
+TeeErrorCode PccsClient::GetTdxCollateral(
+    const std::string& quote, kubetee::SgxQlQveCollateral* quote_collateral) {
+  TEE_CHECK_RETURN(GetCollateral(PCCS_TEE_TYPE_TDX, quote, quote_collateral));
+  quote_collateral->set_tee_type(PCCS_TEE_TYPE_TDX);
   return TEE_SUCCESS;
 }
 

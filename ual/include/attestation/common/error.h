@@ -251,6 +251,7 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_DCAP_PCCS_RES_UNESCAPE                   TEE_MK_ERROR(0x10A7)
 #define TEE_ERROR_DCAP_PCCS_UNKNOWN_API_VERSION            TEE_MK_ERROR(0x10A8)
 #define TEE_ERROR_DCAP_PCCS_GET_REQUEST                    TEE_MK_ERROR(0x10A9)
+#define TEE_ERROR_DCAP_PCCS_URL                            TEE_MK_ERROR(0x10AA)
 #define TEE_ERROR_DCAP_PCCS_UNEXPECTED                     TEE_MK_ERROR(0x10AF)
 
 #define TEE_ERROR_HYGON_KDS                                TEE_MK_ERROR(0x10B0)
@@ -345,6 +346,11 @@ typedef int TeeErrorCode;
 // UnifiedAttestation::Verification::Kunpeng
 #define TEE_ERROR_RA_VERIFY_KUNPENG                        TEE_MK_ERROR(0x11C0)
 #define TEE_ERROR_RA_VERIFY_KUNPENG_REPORT_SIGNATURE       TEE_MK_ERROR(0x11C1)
+
+// UnifiedAttestation::Verification::Kunpeng
+#define TEE_ERROR_RA_VERIFY_INTEL_TDX                      TEE_MK_ERROR(0x11D0)
+#define TEE_ERROR_RA_VERIFY_INTEL_TDX_TEE_TYPE             TEE_MK_ERROR(0x11D1)
+#define TEE_ERROR_RA_VERIFY_INTEL_TDX_QUOTE_VERSION        TEE_MK_ERROR(0x11D2)
 
 // UnifiedAttestation::Uas::Service
 #define TEE_ERROR_UAS_SERVER                               TEE_MK_ERROR(0x1800)

@@ -19,7 +19,7 @@ extern "C" {
 /// This is the untrused version which is called in main report generation
 /// We place them here because they ared used when generate report, and we
 /// want to keep the verification simple enough.
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 TeeErrorCode SgxVerifySubReports(
     const std::string& tee_identity,
     const kubetee::UnifiedAttestationAuthReports& auth_reports,

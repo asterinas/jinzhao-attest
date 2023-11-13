@@ -86,13 +86,13 @@ TeeErrorCode ecall_UaGenerateReport(const char* report_identity,
   } else {
     attester_attr.set_bool_debug_disabled("true");
   }
-#ifdef TEE_TYPE_HYPERENCLAVE
+#ifdef UA_TEE_TYPE_HYPERENCLAVE
   attester_attr.set_str_tee_platform(kUaPlatformHyperEnclave);
 #endif
-#ifdef TEE_TYPE_SGX2
+#ifdef UA_TEE_TYPE_SGX2
   attester_attr.set_str_tee_platform(kUaPlatformSgxDcap);
 #endif
-#ifdef TEE_TYPE_SGX1
+#ifdef UA_TEE_TYPE_SGX1
   attester_attr.set_str_tee_platform(kUaPlatformSgxEpid);
 #endif
   TEE_CHECK_RETURN(TeeInstanceSaveEnclaveInfo(attester_attr, report_identity));

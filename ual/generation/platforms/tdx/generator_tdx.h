@@ -13,7 +13,7 @@
 extern "C" {
 #endif
 
-#define TDX_ATTESTATION_USER_DATA_SIZE 64
+#define TDX_ATTESTATION_REPORT_DATA_SIZE 64
 
 #ifdef __cplusplus
 }
@@ -41,7 +41,7 @@ class AttestationGeneratorTdx : public AttestationGeneratorInterface {
  private:
   // internal functions
   TeeErrorCode GetQuote(const UaReportGenerationParameters& param,
-                        std::string* pquote_b64);
+                        std::string* quote);
 };
 
 }  // namespace attestation

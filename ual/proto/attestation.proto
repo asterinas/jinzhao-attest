@@ -172,6 +172,8 @@ message SgxQlQveCollateral {
   string tcb_info = 6 [json_name = "tcb_info"];
   string qe_identity_issuer_chain = 7 [json_name = "qe_identity_issuer_chain"];
   string qe_identity = 8 [json_name = "qe_identity"];
+  // <  0x00000000: SGX or 0x00000081: TDX
+  int64 tee_type = 20 [json_name = "tee_type"];
 }
 
 /// UnifiedAttestationReport::json_report for HyperEnclave
@@ -200,6 +202,9 @@ message HygonCsvReport {
 /// UnifiedAttestationReport::json_report for Intel TDX
 message IntelTdxReport {
   string b64_quote = 1 [json_name = "b64_quote"];
+  // For Passport type report: Quote and collateral in report
+  // The serialized JSON string of the SgxQlQveCollateral
+  string json_collateral = 2 [json_name = "json_collateral"];
 }
 
 /// Hygon CSV report verification collateral about certificates

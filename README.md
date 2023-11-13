@@ -43,6 +43,7 @@ The following table shows all the TEE platforms we currently support, and the su
 | HyperEnclave             | Yes            | Yes              |
 | Kunpeng Trustzone        | No             | Yes              |
 | Hygon CSV                | Yes            | Yes              |
+| Intel TDX                | Yes            | Yes              |
 
 
 # Quick Start
@@ -86,10 +87,10 @@ For How to setup the PCCS, please refer to [Intel DCAP document](https://github.
 ./dockerenv.sh --exec --occlum
 ./build.sh --with-samples --envtype OCCLUM
 
-# Ubuntu build environment for Hygon CSV VM TEE
-./dockerenv.sh --init --ubuntu --csv
-./dockerenv.sh --exec --ubuntu --csv
-./build.sh --with-samples --envtype VMTEE --teetype CSV
+# Ubuntu build environment for Hygon CSV or Intel TDX VM TEE
+./dockerenv.sh --init --ubuntu --csv|--tdx
+./dockerenv.sh --exec --ubuntu --csv|--tdx
+./build.sh --with-samples --envtype VMTEE --teetype CSV|TDX
 ```
 
 ## Run the sample code

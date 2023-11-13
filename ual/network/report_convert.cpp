@@ -21,7 +21,7 @@ TeeErrorCode ReportConvert::SgxDcapBgcheckToPassPortReport(
   std::string quote = b64_qoute_bytes.FromBase64().GetStr();
   kubetee::attestation::PccsClient pccs_client;
   kubetee::SgxQlQveCollateral collateral;
-  TEE_CHECK_RETURN(pccs_client.GetCollateral(quote, &collateral));
+  TEE_CHECK_RETURN(pccs_client.GetSgxCollateral(quote, &collateral));
   TEE_LOG_DEBUG("Get collateral from pccs success");
 
   PB2JSON(collateral, dcap_report.mutable_json_collateral());
@@ -79,9 +79,22 @@ TeeErrorCode ReportConvert::CsvBgcheckToPassPortReport(
 
 TeeErrorCode ReportConvert::TdxBgcheckToPassPortReport(
     kubetee::UnifiedAttestationReport* report) {
-  // TODO
-  TEE_LOG_DEBUG("Intel TDX platform report convert, not Implemented");
+  std::string* json_report = report->mutable_json_report();
+  kubetee::IntelTdxReport tdx_report;
+  JSON2PB(*json_report, &tdx_report);
+  if (tdx_report.b64_quote().empty()) {
+    TEE_LOG_ERROR("tdx_report.b64_quote can not be null");
+    return TEE_ERROR_CONVERT_INFO_EMPTY;
+  }
+  kubetee::common::DataBytes b64_qoute_bytes(tdx_report.b64_quote());
+  std::string quote = b64_qoute_bytes.FromBase64().GetStr();
+  kubetee::attestation::PccsClient pccs_client;
+  kubetee::SgxQlQveCollateral collateral;
+  TEE_CHECK_RETURN(pccs_client.GetTdxCollateral(quote, &collateral));
+  TEE_LOG_DEBUG("Get collateral from pccs success");
 
+  PB2JSON(collateral, tdx_report.mutable_json_collateral());
+  PB2JSON(tdx_report, json_report);
   report->set_str_report_type(kUaReportTypePassport);
   return TEE_SUCCESS;
 }

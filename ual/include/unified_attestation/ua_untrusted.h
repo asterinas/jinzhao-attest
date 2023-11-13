@@ -33,7 +33,7 @@
 #include "attestation/verification/core/verifier_interface.h"
 #include "attestation/verification/ua_verification.h"
 #include "attestation/verification/unified_attestation_verification.h"
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 #include "grpc/untrusted_grpc_client.h"
 #include "grpc/untrusted_grpc_server.h"
 #endif

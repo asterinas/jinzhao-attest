@@ -21,6 +21,9 @@
 #define FMSPC_SIZE 6
 #define PLATFORM_MANIFEST_SIZE 53000
 
+#define PCCS_TEE_TYPE_SGX 0x00
+#define PCCS_TEE_TYPE_TDX 0x81
+
 namespace kubetee {
 namespace attestation {
 
@@ -32,28 +35,16 @@ class PccsClient {
   static char kCrlCATypePlatform[];
   static char kCrlCATypeProcessor[];
 
-  /// Get PCK CRL chain from PCCS server
-  TeeErrorCode GetPckCrlChain(const std::string& ca,
-                              std::string* pck_crl,
-                              std::string* pck_crl_issuer_chain);
-  /// Get TCB information from PCCS server
-  TeeErrorCode GetTcbInfo(const std::string& hex_fmspc,
-                          std::string* tcb_info,
-                          std::string* tcb_info_issuer_chain);
-  /// Get QE identity from PCCS server
-  /// Currently only 0 (ECDSA QE) is supported
-  TeeErrorCode GetQeIdentity(std::string* qe_identity,
-                             std::string* qe_identity_issuer_chain);
-  /// Get CA CRL from PCCS server
-  /// Currently only 0 (ECDSA QE) is supported
-  TeeErrorCode GetRootCaCrl(std::string* root_ca_crl);
+  /// Get SGX quote verification collateral
+  TeeErrorCode GetSgxCollateral(const std::string& quote,
+                                kubetee::SgxQlQveCollateral* quote_collateral);
 
-  /// Get quote verification collateral (all aboves together)
-  TeeErrorCode GetCollateral(const std::string& quote,
-                             kubetee::SgxQlQveCollateral* quote_collateral);
+  /// Get SGX quote verification collateral
+  TeeErrorCode GetTdxCollateral(const std::string& quote,
+                                kubetee::SgxQlQveCollateral* quote_collateral);
 
  private:
-  std::string GetPccsUrl();
+  std::string GetPccsUrl(uint16_t tee_type = PCCS_TEE_TYPE_SGX);
   TeeErrorCode GetApiVersion(int64_t* version);
   TeeErrorCode GetFmspcCaFromQuote(const std::string& quote,
                                    std::string* fmspc_from_quote,
@@ -62,6 +53,27 @@ class PccsClient {
                               const std::string& name,
                               std::string* element,
                               std::string* element_issuer_chain);
+  /// Get PCK CRL chain from PCCS server
+  TeeErrorCode GetPckCrlChain(const std::string& ca,
+                              std::string* pck_crl,
+                              std::string* pck_crl_issuer_chain);
+  /// Get TCB information from PCCS server
+  TeeErrorCode GetTcbInfo(uint16_t tee_type,
+                          const std::string& hex_fmspc,
+                          std::string* tcb_info,
+                          std::string* tcb_info_issuer_chain);
+  /// Get QE identity from PCCS server
+  /// Currently only 0 (ECDSA QE) is supported
+  TeeErrorCode GetQeIdentity(uint16_t tee_type,
+                             std::string* qe_identity,
+                             std::string* qe_identity_issuer_chain);
+  /// Get CA CRL from PCCS server
+  /// Currently only 0 (ECDSA QE) is supported
+  TeeErrorCode GetRootCaCrl(std::string* root_ca_crl);
+  /// Get SGX/TDX quote verification collateral (all above together)
+  TeeErrorCode GetCollateral(uint16_t tee_type,
+                             const std::string& quote,
+                             kubetee::SgxQlQveCollateral* quote_collateral);
   std::string pccs_server_url_;
 };
 

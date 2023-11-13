@@ -6,7 +6,7 @@
 #include "attestation/common/type.h"
 #include "attestation/instance/untrusted_ree_instance.h"
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 #include "instance/platforms/sgx/untrusted/untrusted_ree_sgx.h"
 #endif
 
@@ -15,16 +15,16 @@ namespace attestation {
 
 /// Static methods
 std::shared_ptr<ReeInstanceInterface> ReeInstance::Inner() {
-#ifndef ENV_TYPE_SGXSDK
+#ifndef UA_ENV_TYPE_SGXSDK
   return std::make_shared<ReeInstanceDummy>();
 #else
-#ifdef TEE_TYPE_HYPERENCLAVE
+#ifdef UA_TEE_TYPE_HYPERENCLAVE
   return std::make_shared<ReeInstanceSgx>();
 #endif
-#ifdef TEE_TYPE_SGX2
+#ifdef UA_TEE_TYPE_SGX2
   return std::make_shared<ReeInstanceSgx>();
 #endif
-#ifdef TEE_TYPE_SGX1
+#ifdef UA_TEE_TYPE_SGX1
   return std::make_shared<ReeInstanceSgx>();
 #endif
 #endif

@@ -85,7 +85,7 @@ class ReeInstanceUnknown : public ReeInstanceInterface {
   }
 };
 
-#ifndef ENV_TYPE_SGXSDK
+#ifndef UA_ENV_TYPE_SGXSDK
 #include "attestation/common/uak.h"
 
 // TeeInstanceOcclum for compatbility in Occlum

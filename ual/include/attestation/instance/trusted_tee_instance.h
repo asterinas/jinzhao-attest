@@ -228,7 +228,7 @@ extern TeeErrorCode TeeInstanceDeleteReportCache(
 ///
 extern TeeErrorCode TeeInstanceReportCacheSize();
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 /// @brief C++ API for generating authentication report by ocall
 extern TeeErrorCode UaGenerateAuthReport(
     const UaReportGenerationParameters& param,

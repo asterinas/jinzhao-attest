@@ -27,16 +27,16 @@ add_executable(
 if(BUILD_STATIC STREQUAL "OFF")
     target_link_libraries(
         ${SAMPLEAPP} ${UA_LINK_OPTIONS}
-        -L${LIBRARY_OUTPUT_PATH}
+        -L${LIBRARY_OUTPUT_PATH} -L/usr/lib64
         -Wl,--start-group -lual ${UAL_U_LIBS_DEPS} -Wl,--end-group
-        -Wl,-rpath=.:/lib64:/usr/lib:/usr/local/lib
+        -Wl,-rpath=.:/usr/lib64:/lib64:/usr/lib:/usr/local/lib
     )
 else()
     target_link_libraries(
         ${SAMPLEAPP} -static -fPIC
         -L${LIBRARY_OUTPUT_PATH} -L/usr/lib64
         -Wl,--start-group -lual -lprotobuf -lcrypto -lcurl -lssl -ldl -Wl,--end-group
-        -Wl,-rpath=.:/lib64:/usr/lib:/usr/local/lib
+        -Wl,-rpath=.:/usr/lib64:/lib64:/usr/lib:/usr/local/lib
     )
 endif()
 add_dependencies(${SAMPLEAPP} ual)

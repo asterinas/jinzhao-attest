@@ -13,12 +13,12 @@
 
 #include "attestation/generation/core/generator_interface.h"
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 #include "./sgx_dcap_ql_wrapper.h"
 #include "./sgx_dcap_qv_internal.h"
 #endif
 
-#ifdef ENV_TYPE_OCCLUM
+#ifdef UA_ENV_TYPE_OCCLUM
 #define SGXIOC_GET_DCAP_QUOTE_SIZE _IOR('s', 7, uint32_t)
 #define SGXIOC_GEN_DCAP_QUOTE _IOWR('s', 8, sgxioc_gen_dcap_quote_arg_t)
 
@@ -50,7 +50,7 @@ class AttestationGeneratorSgxDcap : public AttestationGeneratorInterface {
 
  private:
   // internal functions
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
   TeeErrorCode LoadInProcQe();
   TeeErrorCode InitTargetInfo();
   TeeErrorCode GetSgxReport(const UaReportGenerationParameters& param);
@@ -59,7 +59,7 @@ class AttestationGeneratorSgxDcap : public AttestationGeneratorInterface {
   TeeErrorCode GetQuote(const UaReportGenerationParameters& param,
                         std::string* b64_quote);
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
   sgx_target_info_t target_info_;
   sgx_report_t report_;
 #endif

@@ -21,21 +21,44 @@
 #include "attestation/common/sm3.h"
 #include "attestation/common/type.h"
 #include "attestation/common/uak.h"
+#include "attestation/platforms/tdx_report_body.h"
 #include "attestation/verification/ua_verification.h"
 
 #include "generation/platforms/tdx/generator_tdx.h"
+
+#include "network/pccs_client.h"
+
+#include "./tdx_attest.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-static TeeErrorCode get_tdx_attestation_report(const uint8_t* user_data_buf,
-                                               int user_data_len,
-                                               uint8_t* report_buf,
-                                               int* report_size) {
-  // dummy code here, to be implemented
-  memcpy(report_buf, user_data_buf, *report_size);
-  return TEE_SUCCESS;
+static TeeErrorCode get_tdx_attestation_quote(tdx_report_data_t* report_data,
+                                              std::string* tdx_quote) {
+  tdx_report_t tdx_report = {{0}};
+  int ret = tdx_att_get_report(report_data, &tdx_report);
+  if (ret) {
+    TEE_LOG_ERROR("tdx_att_get_report failed: 0x%X", ret);
+    return ret;
+  }
+
+  // generation quote
+  tdx_uuid_t selected_att_key_id = {{0}};
+  uint8_t* p_quote_buf = nullptr;
+  uint32_t quote_size = 0;
+  ret = tdx_att_get_quote(report_data, NULL, 0, &selected_att_key_id,
+                          &p_quote_buf, &quote_size, 0);
+  if ((ret == TDX_ATTEST_SUCCESS) && p_quote_buf) {
+    TEE_LOG_DEBUG("get_tdx_attestation_quote success");
+    tdx_quote->assign(RCAST(char*, p_quote_buf), quote_size);
+  } else {
+    TEE_LOG_ERROR("tdx_att_get_quote failed: 0x%X", ret);
+  }
+  if (p_quote_buf) {
+    tdx_att_free_quote(p_quote_buf);
+  }
+  return ret;
 }
 
 #ifdef __cplusplus
@@ -55,29 +78,30 @@ TeeErrorCode AttestationGeneratorTdx::Initialize(
 }
 
 TeeErrorCode AttestationGeneratorTdx::GetQuote(
-    const UaReportGenerationParameters& param, std::string* pquote_b64) {
-  // Prepare the user data buffer
-  uint8_t report_data_buf[TDX_ATTESTATION_USER_DATA_SIZE] = {
-      0,
-  };
-  TEE_CHECK_RETURN(PrepareReportData(param, report_data_buf,
-                                     TDX_ATTESTATION_USER_DATA_SIZE));
+    const UaReportGenerationParameters& param, std::string* quote) {
+  // Check the report data size
+  size_t report_data_size = sizeof(tdx_report_data_t);
+  if (report_data_size != TDX_ATTESTATION_REPORT_DATA_SIZE) {
+    TEE_LOG_ERROR("Unexprect report data struct size: %d", report_data_size);
+    return TEE_ERROR_RA_REPORT_DATA_SIZE;
+  }
+
+  // Prepare the report data
+  tdx_report_data_t report_data;
+  TEE_CHECK_RETURN(PrepareReportData(param, report_data.d, report_data_size));
   // Replace the higher 32 bytes by HASH UAK public key
   if (param.others.pem_public_key().empty() && !UakPublic().empty()) {
     kubetee::common::DataBytes pubkey(UakPublic());
-    pubkey.ToSHA256().Export(report_data_buf + kSha256Size, kSha256Size).Void();
+    pubkey.ToSHA256().Export(report_data.d + kSha256Size, kSha256Size).Void();
   }
 
-  // Get the TDX report
-  uint8_t report_buf[TDX_ATTESTATION_USER_DATA_SIZE];
-  int report_size = TDX_ATTESTATION_USER_DATA_SIZE;
-  TEE_CHECK_RETURN(get_tdx_attestation_report(report_data_buf,
-                                              TDX_ATTESTATION_USER_DATA_SIZE,
-                                              report_buf, &report_size));
+  // Get TDX quote
+  TEE_CHECK_RETURN(get_tdx_attestation_quote(&report_data, quote));
 
-  kubetee::common::DataBytes b64_quote;
-  b64_quote.SetValue(RCAST(uint8_t*, &report_buf), sizeof(report_buf));
-  pquote_b64->assign(b64_quote.ToBase64().GetStr());
+  // Parse the attester attributes
+  kubetee::common::platforms::TdxReportBodyParser report_body_parser;
+  TEE_CHECK_RETURN(report_body_parser.ParseReportBody(*quote, &attributes_));
+
   return TEE_SUCCESS;
 }
 
@@ -85,8 +109,13 @@ TeeErrorCode AttestationGeneratorTdx::CreateBgcheckReport(
     const UaReportGenerationParameters& param,
     kubetee::UnifiedAttestationReport* report) {
   // Get attestation quote
+  std::string quote;
+  TEE_CHECK_RETURN(GetQuote(param, &quote));
+
+  // Convent quote to base64 format
   kubetee::IntelTdxReport tdx_report;
-  TEE_CHECK_RETURN(GetQuote(param, tdx_report.mutable_b64_quote()));
+  kubetee::common::DataBytes quote_b64(quote);
+  tdx_report.set_b64_quote(quote_b64.ToBase64().GetStr());
 
   // Make the final report with quote only
   report->set_str_tee_platform(kUaPlatformTdx);
@@ -100,8 +129,21 @@ TeeErrorCode AttestationGeneratorTdx::CreatePassportReport(
     const UaReportGenerationParameters& param,
     kubetee::UnifiedAttestationReport* report) {
   // Get attestation quote
+  std::string quote;
+  TEE_CHECK_RETURN(GetQuote(param, &quote));
+
+  // Get the quote verification collateral
+  kubetee::SgxQlQveCollateral collateral;
+  PccsClient pccs_client;
+  TEE_CHECK_RETURN(pccs_client.GetSgxCollateral(quote, &collateral));
+
+  // Convent quote to base64 format and prepare DcapReport
   kubetee::IntelTdxReport tdx_report;
-  TEE_CHECK_RETURN(GetQuote(param, tdx_report.mutable_b64_quote()));
+  kubetee::common::DataBytes quote_b64(quote);
+  tdx_report.set_b64_quote(quote_b64.ToBase64().GetStr());
+  TEE_LOG_TRACE("QUOTE BASE64[%lu]: %s", tdx_report.b64_quote().size(),
+                tdx_report.b64_quote().c_str());
+  PB2JSON(collateral, tdx_report.mutable_json_collateral());
 
   // Make the final report with quote only
   report->set_str_tee_platform(kUaPlatformTdx);

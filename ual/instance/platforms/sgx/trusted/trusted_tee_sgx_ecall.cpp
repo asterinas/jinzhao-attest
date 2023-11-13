@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-#ifdef TEE_TYPE_HYPERENCLAVE
+#ifdef UA_TEE_TYPE_HYPERENCLAVE
 static size_t GetSharedBufFreeSize() {
   const size_t OCALL_SIZE = 8 * sizeof(size_t);
   size_t free_size = sgx_ocremain_size();
@@ -133,7 +133,7 @@ TeeErrorCode ecall_TeeRun(const char* params_buf,
       ELOG_ERROR("Fail to allocate untrusted memory: len=%ld", res_size);
       return TEE_ERROR_MERGE(ret, sc);
     }
-#ifdef TEE_TYPE_HYPERENCLAVE
+#ifdef UA_TEE_TYPE_HYPERENCLAVE
     // For hyperenclave msbuf mode, cannot read untrusted address directly
     TEE_CHECK_RETURN(UntrustedWriteBuf(*res_buf, res_str.data(), res_size));
 #else

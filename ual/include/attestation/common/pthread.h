@@ -1,7 +1,7 @@
 #ifndef UAL_INCLUDE_ATTESTATION_COMMON_PTHREAD_H_
 #define UAL_INCLUDE_ATTESTATION_COMMON_PTHREAD_H_
 
-#if defined(ENV_TYPE_SGXSDK) && defined(TEE_TRUSTED)
+#if defined(UA_ENV_TYPE_SGXSDK) && defined(TEE_TRUSTED)
 #include "./sgx_thread.h"
 #define UA_MUTEX_T sgx_thread_mutex_t
 #define UA_MUTEX_INITIALIZER SGX_THREAD_MUTEX_INITIALIZER

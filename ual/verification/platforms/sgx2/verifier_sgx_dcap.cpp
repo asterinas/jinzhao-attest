@@ -121,6 +121,7 @@ TeeErrorCode AttestationVerifierSgxDcap::InitializeCollateralData(
     const kubetee::SgxQlQveCollateral& collateral,
     sgx_ql_qve_collateral_t* collateral_data) {
   collateral_data->version = collateral.version();
+  collateral_data->tee_type = collateral.tee_type();
 
   // Set the sgx_ql_qve_collateral_t with data pointer and size
   // clang-format off
@@ -187,8 +188,8 @@ TeeErrorCode AttestationVerifierSgxDcap::QvlVerifyReport(
   TEE_CHECK_RETURN(InitializeCollateralData(collateral, &collateral_data));
 
   // Get the supplemental data size
-  std::string supplemental;
-  TEE_CHECK_RETURN(QvlInitializeSupplementalData(&supplemental));
+  // std::string supplemental;
+  // TEE_CHECK_RETURN(QvlInitializeSupplementalData(&supplemental));
 
   // set current time. Using a small time number as workaround here.
   // In production mode a trusted time should be used.
@@ -207,8 +208,7 @@ TeeErrorCode AttestationVerifierSgxDcap::QvlVerifyReport(
       pquote, SCAST(uint32_t, quote_size), &collateral_data, current_time,
       &collateral_expiration_status, &quote_verification_result,
       NULL,  // qve_report_info is NULL means qvl mode
-      SCAST(uint32_t, supplemental.size()),
-      RCCAST(uint8_t*, supplemental.data()));
+      0, NULL);
   if (dcap_ret != SGX_QL_SUCCESS) {
     ELOG_ERROR("Fail to verify dcap quote: 0x%04x\n", dcap_ret);
     return TEE_ERROR_RA_VERIFY_DCAP_QUOTE;

@@ -55,7 +55,7 @@ sgx_status_t ocall_UntrustGenerateAuthReport(TeeErrorCode* retval,
                                              int auth_report_buf_size,
                                              unsigned int* auth_report_len);
 
-#ifdef TEE_TYPE_HYPERENCLAVE
+#ifdef UA_TEE_TYPE_HYPERENCLAVE
 // Minimal size when read or write shared buffer in batch
 constexpr size_t MIN_MSBUF_BATCH_SIZE = 1024;
 

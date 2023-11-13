@@ -83,7 +83,7 @@ TeeErrorCode TeeInstanceSgx::ReeRun(
   }
   // The response may be empty
   if (res_buf && res_len) {
-#ifdef TEE_TYPE_HYPERENCLAVE
+#ifdef UA_TEE_TYPE_HYPERENCLAVE
     // For hyperenclave msbuf mode, cannot read untrusted address directly
     std::string res_str(res_len, '\0');
     ret = UntrustedReadBuf(res_buf, CCAST(char*, res_str.data()), res_len);

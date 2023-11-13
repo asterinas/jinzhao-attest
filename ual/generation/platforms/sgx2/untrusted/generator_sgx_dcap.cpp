@@ -16,7 +16,7 @@
 #include "attestation/platforms/sgx_report_body.h"
 #include "attestation/verification/ua_verification.h"
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 #include "generation/platforms/sgx_common/untrusted/untrusted_sgx_common_ecall.h"
 #else
 #include "attestation/instance/trusted_tee_instance.h"
@@ -56,7 +56,7 @@ TeeErrorCode AttestationGeneratorSgxDcap::Initialize(
   return TEE_SUCCESS;
 }
 
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
 TeeErrorCode AttestationGeneratorSgxDcap::LoadInProcQe() {
   // Following functions are valid in Linux in-proc mode only.
   // sgx_qe_set_enclave_load_policy is optional and the default
@@ -207,7 +207,7 @@ TeeErrorCode AttestationGeneratorSgxDcap::GetQuote(
 }
 #endif
 
-#ifdef ENV_TYPE_OCCLUM
+#ifdef UA_ENV_TYPE_OCCLUM
 // For Occlum LibOS environment
 TeeErrorCode AttestationGeneratorSgxDcap::GetQuote(
     const UaReportGenerationParameters& param, std::string* quote) {
@@ -291,7 +291,7 @@ TeeErrorCode AttestationGeneratorSgxDcap::CreatePassportReport(
   // Get the quote verification collateral
   kubetee::SgxQlQveCollateral collateral;
   PccsClient pccs_client;
-  TEE_CHECK_RETURN(pccs_client.GetCollateral(quote, &collateral));
+  TEE_CHECK_RETURN(pccs_client.GetSgxCollateral(quote, &collateral));
 
   // Convent quote to base64 format and prepare DcapReport
   kubetee::DcapReport dcap_report;
@@ -313,7 +313,7 @@ TeeErrorCode AttestationGeneratorSgxDcap::VerifySubReportsTrusted(
     const kubetee::UnifiedAttestationAuthReports& auth_reports,
     const kubetee::UnifiedAttestationPolicy& policy,
     std::string* results_json) {
-#ifdef ENV_TYPE_SGXSDK
+#ifdef UA_ENV_TYPE_SGXSDK
   std::string tee_identity = std::to_string(enclave_id_);
   TEE_CHECK_RETURN(
       SgxVerifySubReports(tee_identity, auth_reports, policy, results_json));
