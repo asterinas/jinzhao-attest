@@ -76,44 +76,6 @@ int UnifiedAttestationGenerateAuthReport(const char* tee_identity,
   return TEE_SUCCESS;
 }
 
-/// C API for unified attestation submodule reports verification
-int UnifiedAttestationVerifySubReports(const char* tee_identity,
-                                       const char** auth_json_str,
-                                       const unsigned int auth_json_count,
-                                       const char** policy_json_str,
-                                       const unsigned int policy_json_count,
-                                       char* nested_reports_json_str,
-                                       unsigned int* nested_reports_json_len) {
-  // Convert to C++ parameters
-  kubetee::UnifiedAttestationAuthReports auth_reports;
-  for (unsigned int i = 0; i < auth_json_count; i++) {
-    auth_reports.add_reports(SAFESTR(auth_json_str[i]));
-  }
-
-  kubetee::UnifiedAttestationPolicy policy;
-  for (unsigned int i = 0; i < policy_json_count; i++) {
-    JSON2PB(SAFESTR(policy_json_str[i]), policy.add_nested_policies());
-  }
-
-  // Call the C++ verify interface, which has trused and untrusted implements
-  std::string nested_reports_json;
-  std::string tee_identity_str = SAFESTR(tee_identity);
-  TEE_CATCH_RETURN(UaGenerationVerifySubReports(tee_identity_str, auth_reports,
-                                                policy, &nested_reports_json));
-
-  // Copy to c buffer
-  if (*nested_reports_json_len <= nested_reports_json.size()) {
-    ELOG_ERROR("Too smaller nested reports buf, %ld required",
-               nested_reports_json.size());
-    return TEE_ERROR_RA_VERIFY_NESTED_REPORTS_SMALLER_BUFFER;
-  }
-  *nested_reports_json_len = nested_reports_json.size();
-  memcpy(nested_reports_json_str, nested_reports_json.data(),
-         nested_reports_json.size());
-
-  return TEE_SUCCESS;
-}
-
 #ifdef __cplusplus
 }
 #endif

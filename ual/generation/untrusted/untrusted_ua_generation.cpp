@@ -89,22 +89,6 @@ TeeErrorCode UaGenerateAuthReportJson(UaReportGenerationParameters* param,
   return TEE_SUCCESS;
 }
 
-/// The C++ API for unified attestation submodule attesters verification
-/// This is the untrused version which is called in main report generation
-/// We place them here because they ared used when generate report, and we
-/// want to keep the verification simple enough.
-TeeErrorCode UaGenerationVerifySubReports(
-    const std::string& tee_identity,
-    const kubetee::UnifiedAttestationAuthReports& auth_reports,
-    const kubetee::UnifiedAttestationPolicy& policy,
-    std::string* results_json) {
-  kubetee::attestation::AttestationGenerator generator;
-  TEE_CHECK_RETURN(generator.Initialize(tee_identity));
-  TEE_CHECK_RETURN(
-      generator.VerifySubReportsTrusted(auth_reports, policy, results_json));
-  return TEE_SUCCESS;
-}
-
 #ifdef __cplusplus
 }
 #endif

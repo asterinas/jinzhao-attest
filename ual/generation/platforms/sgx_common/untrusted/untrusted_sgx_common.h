@@ -17,12 +17,6 @@
 extern "C" {
 #endif
 
-TeeErrorCode SgxVerifySubReports(
-    const std::string& tee_identity,
-    const kubetee::UnifiedAttestationAuthReports& auth_reports,
-    const kubetee::UnifiedAttestationPolicy& policy,
-    std::string* results_json);
-
 #ifdef __cplusplus
 }
 #endif

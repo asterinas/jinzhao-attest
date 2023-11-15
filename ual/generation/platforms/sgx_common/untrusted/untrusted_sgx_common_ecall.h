@@ -17,6 +17,7 @@
 extern "C" {
 #endif
 
+// clang-format off
 sgx_status_t ecall_UaGenerateReport(uint64_t eid,
                                     TeeErrorCode* ret,
                                     const char* report_identity,
@@ -28,17 +29,9 @@ sgx_status_t ecall_UaGenerateReport(uint64_t eid,
 sgx_status_t ecall_UaVerifyReport(uint64_t eid,
                                   TeeErrorCode* ret,
                                   sgx_target_info_t* target_info,
-                                  sgx_report_t* target_report)
-    __attribute__((weak));
+                                  sgx_report_t* target_report) __attribute__((weak));
 
-sgx_status_t ecall_UaVerifySubReorts(uint64_t eid,
-                                     TeeErrorCode* ret,
-                                     const char* reports,
-                                     const char* policy,
-                                     char* nested_report_json,
-                                     int nested_report_size_max,
-                                     int* nested_report_len)
-    __attribute__((weak));
+// clang-format on
 
 #ifdef __cplusplus
 }

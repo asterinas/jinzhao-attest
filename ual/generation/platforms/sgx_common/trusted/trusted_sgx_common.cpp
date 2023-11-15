@@ -122,28 +122,6 @@ TeeErrorCode ecall_UaVerifyReport(sgx_target_info_t* target_info,
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ecall_UaVerifySubReorts(const char* auth_reports_json,
-                                     const char* policy_json,
-                                     char* nested_report_json,
-                                     int nested_report_max,
-                                     int* nested_report_len) {
-  TEE_CHECK_VALIDBUF(nested_report_json, nested_report_max);
-  kubetee::UnifiedAttestationAuthReports auth_reports;
-  kubetee::UnifiedAttestationPolicy policy;
-  JSON2PB(SAFESTR(auth_reports_json), &auth_reports);
-  JSON2PB(SAFESTR(policy_json), &policy);
-  std::string nested_reports_str;
-  TEE_CHECK_RETURN(
-      UaVerifySubReports(auth_reports, policy, &nested_reports_str));
-  if (SCAST(size_t, nested_report_max) <= nested_reports_str.size()) {
-    ELOG_ERROR("Too smaller nested report ecall buffer");
-    return TEE_ERROR_RA_VERIFY_NESTED_REPORTS_SMALLER_BUFFER1;
-  }
-  *nested_report_len = nested_reports_str.size();
-  memcpy(nested_report_json, nested_reports_str.data(), *nested_report_len);
-  return TEE_SUCCESS;
-}
-
 #ifdef __cplusplus
 }
 #endif

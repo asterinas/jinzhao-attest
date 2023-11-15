@@ -7,137 +7,105 @@
 using kubetee::attestation::ReeInstance;
 
 static int g_report_index = 1;
+static const char kGroupName[] = "test-group";
+static const char kGroupID[] = "5f3b66f3-e00f-4fd3-ae57-296ccb4c9c58";
 
-static TeeErrorCode GenerateSubmoduleAuthReportJson(
-    std::string* json_auth_report) {
-  kubetee::attestation::ReeInstance ree;
-  kubetee::attestation::UaTeeInitParameters param;
-  param.trust_application = ENCLAVE;
-  TEE_CHECK_RETURN(ree.Initialize(param));
+// We assume that all submodule attester report have already been verified.
+// And this code to prepare and sign nested reports shoul be in TEE.
+static TeeErrorCode PrepareNestedReports(std::string* json_nested_reports) {
+  kubetee::UnifiedAttestationNestedResults nested_results;
 
-  // Call the TeeInstanceUpdateReportData() in enclave side
-  // So, the untrusted user_data here will be ignored.
-  std::string report_index = "99" + std::to_string(g_report_index++);
-  kubetee::common::DataBytes hex_user_data(report_index);
-  TEE_CHECK_RETURN(hex_user_data.ToHexStr().GetError());
-  kubetee::UnifiedFunctionGenericRequest req;
-  kubetee::UnifiedFunctionGenericResponse res;
-  req.add_argv(hex_user_data.GetStr());
-  TEE_CHECK_RETURN(ree.TeeRun("SampleEnclaveInit", req, &res));
+  // Set group name and ID
+  nested_results.set_str_group_name(kGroupName);
+  nested_results.set_str_group_id(kGroupID);
 
-  // Generate the unified attestation report
-  UaReportGenerationParameters report_param;
-  report_param.tee_identity = ree.TeeIdentity();
-  report_param.report_type = kUaReportTypePassport;
-  TEE_CHECK_RETURN(UaGenerateAuthReportJson(&report_param, json_auth_report));
+  // Set the submodule attester1
+  kubetee::UnifiedAttestationNestedResult* nested_result1 =
+      nested_results.add_results();
+  kubetee::UnifiedAttestationAttributes* attr1 =
+      nested_result1->mutable_result();
+  attr1->set_str_tee_name("App1");
+  attr1->set_hex_user_data("393931");
 
+  // Set the submodule attester2
+  kubetee::UnifiedAttestationNestedResult* nested_result2 =
+      nested_results.add_results();
+  kubetee::UnifiedAttestationAttributes* attr2 =
+      nested_result2->mutable_result();
+  attr2->set_str_tee_name("App2");
+  attr2->set_hex_user_data("393932");
+
+  kubetee::UnifiedAttestationNestedReports nested_reports;
+  PB2JSON(nested_results, nested_reports.mutable_json_nested_results());
+
+  // Add the signature of submodule enclaves
+  std::string signature;
+  TEE_CHECK_RETURN(kubetee::common::RsaCrypto::Sign(
+      UakPrivate(), nested_reports.json_nested_results(), &signature));
+  kubetee::common::DataBytes b64_signature(signature);
+  nested_reports.set_b64_nested_signature(b64_signature.ToBase64().GetStr());
+
+  PB2JSON(nested_reports, json_nested_reports);
   return TEE_SUCCESS;
 }
 
-static TeeErrorCode VerifySubReports(const std::string& tee_identity,
-                                     std::string* nested_reports_str) {
-  // Generate the submodule attester1 reports
-  std::string sub1_report;
-  TEE_CHECK_RETURN(GenerateSubmoduleAuthReportJson(&sub1_report));
-  TEE_LOG_INFO("GenerateSubmoduleAuthReportJson sub2 successfully!");
-  // Generate the submodule attester2 reports
-  std::string sub2_report;
-  TEE_CHECK_RETURN(GenerateSubmoduleAuthReportJson(&sub2_report));
-  TEE_LOG_INFO("GenerateSubmoduleAuthReportJson sub2 successfully!");
-  // Prepare all the submodules auth reports
-  kubetee::UnifiedAttestationAuthReports auth_reports;
-  auth_reports.add_reports(sub1_report);
-  auth_reports.add_reports(sub2_report);
+static TeeErrorCode PrepareNestedPolicies(
+    kubetee::UnifiedAttestationNestedPolicies* nested_policies) {
+  // Set group name and ID
+  nested_policies->set_str_group_name(kGroupName);
+  nested_policies->set_str_group_id(kGroupID);
 
-  // Prepare the nested submodule attester verification policy
-  kubetee::UnifiedAttestationPolicy policy;
-  kubetee::UnifiedAttestationNestedPolicy* sub_attester1 =
-      policy.add_nested_policies();
-  kubetee::UnifiedAttestationAttributes* attr11 =
-      sub_attester1->add_sub_attributes();
-  attr11->set_hex_ta_measurement("");
-  attr11->set_hex_signer("");
-  attr11->set_hex_prod_id("");
-  attr11->set_str_min_isvsvn("");
-  attr11->set_bool_debug_disabled("");
-  attr11->set_str_tee_platform("");
-  attr11->set_hex_spid("");
-  attr11->set_str_tee_platform("");
-  attr11->set_hex_user_data("393931");
+  // Set the submodule attester1
+  kubetee::UnifiedAttestationNestedPolicy* nested_policy1 =
+      nested_policies->add_policies();
+  kubetee::UnifiedAttestationAttributes* attr1 =
+      nested_policy1->add_sub_attributes();
+  attr1->set_str_tee_name("App1");
+  attr1->set_hex_user_data("393931");
 
-  kubetee::UnifiedAttestationNestedPolicy* sub_attester2 =
-      policy.add_nested_policies();
-  kubetee::UnifiedAttestationAttributes* attr21 =
-      sub_attester2->add_sub_attributes();
-  attr21->CopyFrom(*attr11);
-  attr21->set_hex_user_data("393932");
-
-  // Verify the submodule attester locally firstly
-  TEE_CHECK_RETURN(UaGenerationVerifySubReports(tee_identity, auth_reports,
-                                                policy, nested_reports_str));
-  TEE_LOG_INFO("UaGenerationVerifySubReports successfully!");
-
-  return TEE_SUCCESS;
-}
-
-static TeeErrorCode GenerateMainAuthReportJson(std::string* auth_json) {
-  kubetee::attestation::ReeInstance ree;
-  kubetee::attestation::UaTeeInitParameters param;
-  param.trust_application = ENCLAVE;
-  TEE_CHECK_RETURN(ree.Initialize(param));
-
-  std::string nested_reports;
-  TEE_CHECK_RETURN(VerifySubReports(ree.TeeIdentity(), &nested_reports));
-
-  // Call the TeeInstanceSetReportData() in enclave side
-  // So, the untrusted user_data here will be ignored.
-  std::string report_index = "99" + std::to_string(g_report_index++);
-  kubetee::common::DataBytes hex_user_data(report_index);
-  TEE_CHECK_RETURN(hex_user_data.ToHexStr().GetError());
-  kubetee::UnifiedFunctionGenericRequest req;
-  kubetee::UnifiedFunctionGenericResponse res;
-  req.add_argv(hex_user_data.GetStr());
-  TEE_CHECK_RETURN(ree.TeeRun("SampleEnclaveInit", req, &res));
-
-  // Generate the main unified attestation report
-  UaReportGenerationParameters report_param;
-  report_param.tee_identity = ree.TeeIdentity();
-  report_param.report_type = kUaReportTypePassport;
-  report_param.others.set_json_nested_reports(nested_reports);
-  TEE_CHECK_RETURN(UaGenerateAuthReportJson(&report_param, auth_json));
+  // Set the submodule attester2
+  kubetee::UnifiedAttestationNestedPolicy* nested_policy2 =
+      nested_policies->add_policies();
+  kubetee::UnifiedAttestationAttributes* attr2 =
+      nested_policy2->add_sub_attributes();
+  attr2->set_str_tee_name("App2");
+  attr2->set_hex_user_data("393932");
 
   return TEE_SUCCESS;
 }
 
 int main(int argc, char** argv) {
-  // Generate the main enclave report with nested enclaves
-  std::string main_report;
-  TEE_CHECK_RETURN(GenerateMainAuthReportJson(&main_report));
-  TEE_LOG_INFO("GenerateMainAuthReportJson successfully!");
+  // Prepare nested reports
+  std::string json_nested_reports;
+  TEE_CHECK_RETURN(PrepareNestedReports(&json_nested_reports));
+
+  // Generate the main enclave report with nested results
+  const std::string main_user_data = "393933";
+  UaReportGenerationParameters param;
+  param.tee_identity = kDummyTeeIdentity;
+  param.report_type = kUaReportTypePassport;
+  param.others.set_json_nested_reports(json_nested_reports);
+  param.others.set_hex_user_data(main_user_data);
+  kubetee::UnifiedAttestationAuthReport report;
+  TEE_CHECK_RETURN(UaGenerateAuthReport(&param, &report));
+  TEE_LOG_INFO("Generate nested auth report successfully!");
 
   // Prepare the nested report verification policy
   // Only verify the user_data here as example
   // Must set other necessary attributes in real product code.
   kubetee::UnifiedAttestationPolicy policy;
-  kubetee::UnifiedAttestationAttributes* attr = policy.add_main_attributes();
-  attr->set_hex_user_data("393933");
-  kubetee::UnifiedAttestationNestedPolicy* nested_policy1 =
-      policy.add_nested_policies();
-  kubetee::UnifiedAttestationAttributes* attr1 =
-      nested_policy1->add_sub_attributes();
-  attr1->set_hex_user_data("393931");
-  kubetee::UnifiedAttestationNestedPolicy* nested_policy2 =
-      policy.add_nested_policies();
-  kubetee::UnifiedAttestationAttributes* attr2 =
-      nested_policy2->add_sub_attributes();
-  attr2->set_hex_user_data("393932");
-
-  // Verify the main enclave report int untrusted part directly
+  kubetee::UnifiedAttestationAttributes* main_attr =
+      policy.add_main_attributes();
+  main_attr->set_hex_user_data(main_user_data);
+  // Prepare the nested policies
+  TEE_CHECK_RETURN(PrepareNestedPolicies(policy.mutable_nested_policies()));
   std::string policy_json;
   PB2JSON(policy, &policy_json);
-  TEE_LOG_INFO("Nested report verify policy:\n%s", policy_json.c_str());
-  TEE_CHECK_RETURN(UaVerifyAuthReportJson(main_report, policy_json));
-  TEE_LOG_INFO("UaVerifyAuthReportJson successfully!");
+  TEE_LOG_INFO("Nested policy:\n%s", policy_json.c_str());
+
+  // Verify the main enclave report int untrusted part directly
+  TEE_CHECK_RETURN(UaVerifyAuthReport(report, policy));
+  TEE_LOG_INFO("Verify nested auth report successfully!");
 
   return 0;
 }

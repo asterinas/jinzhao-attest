@@ -31,10 +31,6 @@ class AttestationGeneratorInterface {
   virtual TeeErrorCode CreateBgcheckReport(
       const UaReportGenerationParameters& param,
       kubetee::UnifiedAttestationReport* report) = 0;
-  virtual TeeErrorCode VerifySubReportsTrusted(
-      const kubetee::UnifiedAttestationAuthReports& auth_reports,
-      const kubetee::UnifiedAttestationPolicy& policy,
-      std::string* results_json) = 0;
   virtual ~AttestationGeneratorInterface() = default;
 
   TeeErrorCode PrepareReportData(const UaReportGenerationParameters& param,

@@ -35,6 +35,8 @@ extern const char kUaAttrPlatformSwVer[];
 extern const char kUaAttrSecureFlags[];
 extern const char kUaAttrMrplatform[];
 extern const char kUaAttrMrboot[];
+extern const char kUaAttrTeeName[];
+extern const char kUaAttrTeeID[];
 extern const char kUaAttrMrTa[];
 extern const char kUaAttrMrTaDyn[];
 extern const char kUaAttrSigner[];
@@ -45,6 +47,10 @@ extern const char kUaAttrUserData[];
 extern const char kUaAttrPublickey[];
 extern const char kUaAttrNonce[];
 extern const char kUaAttrSpid[];
+extern const char kUaAttrVerifiedTime[];
+
+extern const char kUaNestedGroupName[];
+extern const char kUaNestedGroupID[];
 
 // Size of each type of UnifiedAttestationReport
 extern const int kUaReportSizeBgcheck;

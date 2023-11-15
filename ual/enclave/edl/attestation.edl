@@ -17,13 +17,6 @@ enclave {
             [in] sgx_target_info_t *target_info,
             [in] sgx_report_t *target_report);
 
-        public TeeErrorCode ecall_UaVerifySubReorts(
-            [in, string] const char *reports,
-            [in, string] const char *policy,
-            [out, size=nested_report_max] char *nested_report_json,
-            int nested_report_max, 
-            [out] int* nested_report_len);
-
         public TeeErrorCode ecall_UaGetPublicKey(
             [out, size=max] char* public_key_buf,
             int max,

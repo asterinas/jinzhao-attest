@@ -53,34 +53,6 @@ extern int UnifiedAttestationGenerateAuthReport(
     char* auth_report_buf,
     unsigned int* auth_report_len);
 
-/// @brief C API for verifying nested submodule attester report
-///
-/// @param tee_identity: The identity of TEE or TA instance.
-/// @param auth_json_str: This is a char* array, each item points to the JSON
-///                       serialized string of UnifiedAttestationAuthReport.
-/// @param auth_json_count: The count of JSON UnifiedAttestationAuthReport.
-/// @param policy_json_str: This is a char* array, each item is used to verify
-///                         a auth report, and points to the JSON serialized
-///                         string of UnifiedAttestationNestedPolicy.
-///                         Full UnifiedAttestationPolicy is composed inside
-///                         this function to call other under-layer function.
-/// @param policy_json_count: The count of JSON UnifiedAttestationNestedPolicy.
-/// @param nested_reports_json_str: The output buffer for JSON serialized
-///                                 string of UnifiedAttestationNestedReports
-/// @param nested_reports_json_len: The input max and output real lenght of
-///                                 nested reports buffer.
-///
-/// @return 0 means success or other error code
-///
-extern int UnifiedAttestationVerifySubReports(
-    const char* tee_identity,
-    const char** auth_json_str,
-    const unsigned int auth_json_count,
-    const char** policy_json_str,
-    const unsigned int policy_json_count,
-    char* nested_reports_json_str,
-    unsigned int* nested_reports_json_len);
-
 #ifdef __cplusplus
 }
 #endif
