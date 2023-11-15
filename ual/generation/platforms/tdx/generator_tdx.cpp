@@ -153,13 +153,5 @@ TeeErrorCode AttestationGeneratorTdx::CreatePassportReport(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode AttestationGeneratorTdx::VerifySubReportsTrusted(
-    const kubetee::UnifiedAttestationAuthReports& auth_reports,
-    const kubetee::UnifiedAttestationPolicy& policy,
-    std::string* results_json) {
-  TEE_CHECK_RETURN(UaVerifySubReports(auth_reports, policy, results_json));
-  return TEE_SUCCESS;
-}
-
 }  // namespace attestation
 }  // namespace kubetee

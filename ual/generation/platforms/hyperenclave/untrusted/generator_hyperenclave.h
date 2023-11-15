@@ -63,10 +63,6 @@ class AttestationGeneratorHyperEnclave : public AttestationGeneratorInterface {
                                    UnifiedAttestationReport* report) override;
   TeeErrorCode CreatePassportReport(const UaReportGenerationParameters& param,
                                     UnifiedAttestationReport* report) override;
-  TeeErrorCode VerifySubReportsTrusted(
-      const kubetee::UnifiedAttestationAuthReports& auth_reports,
-      const kubetee::UnifiedAttestationPolicy& policy,
-      std::string* results_json) override;
 
  private:
   // internal functions

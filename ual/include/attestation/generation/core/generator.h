@@ -19,12 +19,6 @@ class AttestationGenerator {
   TeeErrorCode GenerateReport(const UaReportGenerationParameters& param,
                               kubetee::UnifiedAttestationReport* report);
 
-  // Verify the submodules reports inside TEE
-  TeeErrorCode VerifySubReportsTrusted(
-      const kubetee::UnifiedAttestationAuthReports& auth_reports,
-      const kubetee::UnifiedAttestationPolicy& policy,
-      std::string* results_json);
-
   // Get the attester attributes
   TeeErrorCode GetAttesterAttr(kubetee::UnifiedAttestationAttributes* attr);
 

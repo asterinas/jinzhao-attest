@@ -111,15 +111,6 @@ TeeErrorCode AttestationGenerator::GenerateReport(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode AttestationGenerator::VerifySubReportsTrusted(
-    const kubetee::UnifiedAttestationAuthReports& auth_reports,
-    const kubetee::UnifiedAttestationPolicy& policy,
-    std::string* results_json) {
-  TEE_CHECK_RETURN(
-      inner_->VerifySubReportsTrusted(auth_reports, policy, results_json));
-  return TEE_SUCCESS;
-}
-
 TeeErrorCode AttestationGenerator::GetAttesterAttr(
     kubetee::UnifiedAttestationAttributes* attr) {
   TEE_CHECK_RETURN(inner_->GetAttesterAttr(attr));

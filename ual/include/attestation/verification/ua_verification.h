@@ -48,11 +48,6 @@ extern TeeErrorCode UaGetAuthReportAttrJson(const std::string& auth_json,
 extern TeeErrorCode UaGetReportAttrJson(const std::string& report_json,
                                         std::string* attr_json);
 
-extern TeeErrorCode UaVerifySubReports(
-    const kubetee::UnifiedAttestationAuthReports& auth_reports,
-    const kubetee::UnifiedAttestationPolicy& policy,
-    std::string* nested_reports_json);
-
 #ifdef __cplusplus
 }
 #endif

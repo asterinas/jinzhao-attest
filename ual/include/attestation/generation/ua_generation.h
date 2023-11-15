@@ -37,13 +37,6 @@ extern TeeErrorCode UaGenerateAuthReport(
 extern TeeErrorCode UaGenerateAuthReportJson(
     UaReportGenerationParameters* param, std::string* json_auth_report);
 
-/// @brief C++ API for unified attestation nested verification
-extern TeeErrorCode UaGenerationVerifySubReports(
-    const std::string& tee_identity,
-    const kubetee::UnifiedAttestationAuthReports& auth_reports,
-    const kubetee::UnifiedAttestationPolicy& policy,
-    std::string* nested_reports_json);
-
 #ifdef __cplusplus
 }
 #endif

@@ -388,20 +388,5 @@ TeeErrorCode AttestationGeneratorSgxEpid::CreatePassportReport(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode AttestationGeneratorSgxEpid::VerifySubReportsTrusted(
-
-    const kubetee::UnifiedAttestationAuthReports& auth_reports,
-    const kubetee::UnifiedAttestationPolicy& policy,
-    std::string* results_json) {
-#ifdef UA_ENV_TYPE_SGXSDK
-  std::string tee_identity = std::to_string(enclave_id_);
-  TEE_CHECK_RETURN(
-      SgxVerifySubReports(tee_identity, auth_reports, policy, results_json));
-#else
-  TEE_CHECK_RETURN(UaVerifySubReports(auth_reports, policy, results_json));
-#endif
-  return TEE_SUCCESS;
-}
-
 }  // namespace attestation
 }  // namespace kubetee

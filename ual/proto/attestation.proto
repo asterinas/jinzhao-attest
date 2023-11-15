@@ -51,20 +51,21 @@ message UnifiedAttestationNestedReports {
 
 /// The list of nested attester's attestation results 
 message UnifiedAttestationNestedResults {
-  repeated UnifiedAttestationAttributes results = 1 [json_name = "results"];
+  // The group name and id are used for group attestation
+  string str_group_name = 1 [json_name = "str_group_name"];
+  string str_group_id = 2 [json_name = "str_group_id"];
+  repeated UnifiedAttestationNestedResult results = 3 [json_name = "results"];
+}
+
+/// Nested Result for each TEE instance
+message UnifiedAttestationNestedResult {
+  UnifiedAttestationAttributes result = 3 [json_name = "result"];
 }
 
 /// Unified attestation report with public key authentication
 message UnifiedAttestationAuthReport {
   UnifiedAttestationReport report = 1 [json_name = "report"];
   string pem_public_key = 2 [json_name = "pem_public_key"];
-}
-
-/// Collect all submodule attesters' authentication reports for
-/// main attester local verification together.
-message UnifiedAttestationAuthReports {
-  // JSON serialized string of UnifiedAttestationAuthReport 
-  repeated string reports = 1 [json_name = "reports"];
 }
 
 /// UnifiedAttestationAttributes collect all attributes information
@@ -84,6 +85,8 @@ message UnifiedAttestationAttributes {
   string hex_platform_measurement = 5 [json_name = "hex_platform_measurement"];
   // The measurement of TEE instance boot time stuff
   string hex_boot_measurement = 6 [json_name = "hex_boot_measurement"];
+  // The name of this tee instance
+  string str_tee_name = 8 [json_name = "str_tee_name"];
   // The TEE instance or trust application identity when generating the report
   string str_tee_identity = 9 [json_name = "str_tee_identity"];
   // The static measurement of trust application when loading the code
@@ -108,6 +111,8 @@ message UnifiedAttestationAttributes {
   string hex_nonce = 22 [json_name = "hex_nonce"];
   // The service provider id, e.g. use in sgx1, 64 bytes hex string
   string hex_spid = 30 [json_name = "hex_spid"];
+  // The report verified time set by verifier if there is trust time
+  string str_verified_time = 40 [json_name = "str_verified_time"];
 }
 
 /// UnifiedAttestationPolicy is used when verifying the attestation report.
@@ -123,12 +128,20 @@ message UnifiedAttestationPolicy {
   // For the main attester
   repeated UnifiedAttestationAttributes main_attributes = 2 [json_name = "main_attributes"];
   // For submodule attesters
-  repeated UnifiedAttestationNestedPolicy nested_policies = 3 [json_name = "nested_policies"];
+  UnifiedAttestationNestedPolicies nested_policies = 3 [json_name = "nested_policies"];
+}
+
+/// Match rules for nested reports verification
+message UnifiedAttestationNestedPolicies {
+  // The group name and id are used for group attestation
+  string str_group_name = 1 [json_name = "str_group_name"];
+  string str_group_id = 2 [json_name = "str_group_id"];
+  repeated UnifiedAttestationNestedPolicy policies = 3 [json_name = "policies"];
 }
 
 /// Match rules for nested report verification
 message UnifiedAttestationNestedPolicy {
-  repeated UnifiedAttestationAttributes sub_attributes = 1 [json_name = "sub_attributes"];
+  repeated UnifiedAttestationAttributes sub_attributes = 3 [json_name = "sub_attributes"];
 }
 
 /// UnifiedAttestationReport::json_report for SGX1 EPID BackgroundCheck type

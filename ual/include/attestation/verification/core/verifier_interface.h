@@ -66,6 +66,7 @@ class AttestationVerifierInterface {
   }
 
   // Compare the attributes item
+  bool IsRequired(const char* name, const bool required);
   bool IsStrEqual(const std::string& item_name,
                   const std::string& expected_value,
                   const std::string& actual_value,

@@ -28,6 +28,8 @@ const char kUaAttrPlatformSwVer[] = "PLATFORMSWVERSION";
 const char kUaAttrSecureFlags[] = "SECUREFLAGS";
 const char kUaAttrMrplatform[] = "MRPLATFORM";
 const char kUaAttrMrboot[] = "MRBOOT";
+const char kUaAttrTeeName[] = "TEENAME";
+const char kUaAttrTeeID[] = "TEEIDENTITY";
 const char kUaAttrMrTa[] = "MRTRUSTAPP";
 const char kUaAttrMrTaDyn[] = "MRTRUSTAPPDYN";
 const char kUaAttrSigner[] = "SIGNER";
@@ -38,6 +40,10 @@ const char kUaAttrUserData[] = "USERDATA";
 const char kUaAttrPublickey[] = "PUBLICKEY";
 const char kUaAttrNonce[] = "NONCE";
 const char kUaAttrSpid[] = "SPID";
+const char kUaAttrVerifiedTime[] = "VERIFIEDTIME";
+
+const char kUaNestedGroupName[] = "GROUPNAME";
+const char kUaNestedGroupID[] = "GROUPID";
 
 const int kUaReportSizeBgcheck = 8192;
 const int kUaReportSizePassport = 20480;
