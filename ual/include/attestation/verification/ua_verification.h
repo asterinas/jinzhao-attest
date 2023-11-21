@@ -48,6 +48,17 @@ extern TeeErrorCode UaGetAuthReportAttrJson(const std::string& auth_json,
 extern TeeErrorCode UaGetReportAttrJson(const std::string& report_json,
                                         std::string* attr_json);
 
+/// @brief C++ API to verify policy itself
+///
+/// This happens when policy comes from unstusted administrator or conf file
+///
+extern TeeErrorCode UaVerifyPolicy(
+    const kubetee::UnifiedAttestationPolicy& actual_policy,
+    const kubetee::UnifiedAttestationPolicy& expected_policy);
+
+extern TeeErrorCode UaVerifyPolicyJson(const std::string& actual_policy_json,
+                                       const std::string& expected_policy_json);
+
 #ifdef __cplusplus
 }
 #endif

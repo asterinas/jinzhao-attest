@@ -104,6 +104,27 @@ TeeErrorCode UaGetReportAttrJson(const std::string& report_json,
   return TEE_SUCCESS;
 }
 
+/// @brief C++ API to verify policy itself
+TeeErrorCode UaVerifyPolicy(
+    const kubetee::UnifiedAttestationPolicy& actual_policy,
+    const kubetee::UnifiedAttestationPolicy& expected_policy) {
+  TEE_CHECK_RETURN(
+      kubetee::attestation::AttestationVerifierInterface::VerifyPolicy(
+          actual_policy, expected_policy));
+  return TEE_SUCCESS;
+}
+
+TeeErrorCode UaVerifyPolicyJson(const std::string& actual_policy_json,
+                                const std::string& expected_policy_json) {
+  kubetee::UnifiedAttestationPolicy actual_policy;
+  kubetee::UnifiedAttestationPolicy expected_policy;
+  JSON2PB(actual_policy_json, &actual_policy);
+  JSON2PB(expected_policy_json, &expected_policy);
+
+  TEE_CHECK_RETURN(UaVerifyPolicy(actual_policy, expected_policy));
+  return TEE_SUCCESS;
+}
+
 #ifdef __cplusplus
 }
 #endif

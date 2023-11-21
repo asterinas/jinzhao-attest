@@ -30,6 +30,12 @@ class AttestationVerifierInterface {
   // Verify report
   TeeErrorCode Verify(const kubetee::UnifiedAttestationPolicy& policy);
 
+  // Verify policy
+  // This happens when policy comes from unstusted administrator or conf file
+  static TeeErrorCode VerifyPolicy(
+      const kubetee::UnifiedAttestationPolicy& actual_policy,
+      const kubetee::UnifiedAttestationPolicy& expected_policy);
+
   // Get the attester attributes in this attestation report
   TeeErrorCode GetAttesterAttr(kubetee::UnifiedAttestationAttributes* attr) {
     *attr = attributes_;
@@ -40,7 +46,6 @@ class AttestationVerifierInterface {
   TeeErrorCode ShowAttesterAttributes();
 
   std::string report_type_;
-  bool verify_spid_;
   kubetee::UnifiedAttestationAttributes attributes_;
   kubetee::UnifiedAttestationNestedReports nested_reports_;
 
@@ -51,7 +56,7 @@ class AttestationVerifierInterface {
       const kubetee::UnifiedAttestationPolicy& policy);
 
   // The common methods to compare EnclveInformation
-  TeeErrorCode VerifyAttributes(
+  static TeeErrorCode VerifyAttributes(
       const kubetee::UnifiedAttestationAttributes& actual,
       const kubetee::UnifiedAttestationAttributes& expected);
 
@@ -66,32 +71,32 @@ class AttestationVerifierInterface {
   }
 
   // Compare the attributes item
-  bool IsRequired(const char* name, const bool required);
-  bool IsStrEqual(const std::string& item_name,
+  static bool IsRequired(const char* name, const bool required);
+  static bool IsStrEqual(const std::string& item_name,
                   const std::string& expected_value,
                   const std::string& actual_value,
                   const bool required = false);
-  bool IsStrMatch(const std::string& item_name,
+  static bool IsStrMatch(const std::string& item_name,
                   const std::string& expected_value,
                   const std::string& actual_value,
                   const bool required = false);
-  bool IsHashEqual(const std::string& item_name,
+  static bool IsHashEqual(const std::string& item_name,
                    const std::string& plain_value,
                    const std::string& hash_value,
                    const bool required = false);
-  bool IsBoolEqual(const std::string& item_name,
+  static bool IsBoolEqual(const std::string& item_name,
                    const std::string& expected_value,
                    const std::string& actual_value,
                    const bool required = false);
-  bool IsHexIntEqual(const std::string& item_name,
+  static bool IsHexIntEqual(const std::string& item_name,
                      const std::string& expected_value,
                      const std::string& actual_value,
                      const bool required = false);
-  bool IsIntNotLess(const std::string& item_name,
+  static bool IsIntNotLess(const std::string& item_name,
                     const std::string& expected_value,
                     const std::string& actual_value,
                     const bool required = false);
-  bool StrToBool(const std::string& bool_str);
+  static bool StrToBool(const std::string& bool_str);
 };
 
 }  // namespace attestation

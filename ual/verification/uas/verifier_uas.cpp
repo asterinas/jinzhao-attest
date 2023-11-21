@@ -42,8 +42,6 @@ aptZvSJjcC7s7SKB+l0ttq0Na90iQrTISQIDAQAB
 
 TeeErrorCode AttestationVerifierUas::Initialize(
     const kubetee::UnifiedAttestationReport& report) {
-  verify_spid_ = false;
-
   // Parse the UAS report to get the report_body, attester attributes.
   JSON2PB(report.json_report(), &uas_report_);
   TEE_CHECK_RETURN(ParseUasReport(uas_report_));

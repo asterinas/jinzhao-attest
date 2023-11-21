@@ -69,7 +69,6 @@ TeeErrorCode AttestationVerifierSgxEpid::Initialize(
   if (!report.json_nested_reports().empty()) {
     JSON2PB(report.json_nested_reports(), &nested_reports_);
   }
-  verify_spid_ = true;
   report_type_ = report.str_report_type();
 
   // Check the platform

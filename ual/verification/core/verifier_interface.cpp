@@ -45,6 +45,90 @@ TeeErrorCode AttestationVerifierInterface::Verify(
   return TEE_SUCCESS;
 }
 
+// Verfiy the policy, the actual policy must be stricter than expected policy
+TeeErrorCode AttestationVerifierInterface::VerifyPolicy(
+    const kubetee::UnifiedAttestationPolicy& actual_policy,
+    const kubetee::UnifiedAttestationPolicy& expected_policy) {
+  // policy.pem_public_key
+  if (!IsHashEqual(kUaAttrPublickey, expected_policy.pem_public_key(),
+                   actual_policy.pem_public_key())) {
+    return TEE_ERROR_RA_VERIFY_ATTR_PUBKEY;
+  }
+
+  // policy.main_attributes
+  size_t main_actual_size = actual_policy.main_attributes_size();
+  size_t main_expected_size = expected_policy.main_attributes_size();
+  if (main_actual_size > main_expected_size) {
+    ELOG_ERROR("Verify policy: more actual main attr size: %d/%d",
+               main_actual_size, main_expected_size);
+    return TEE_ERROR_RA_VERIFY_POLICY_MAIN_ATTR_SIZE;
+  }
+  for (int i = 0; i < main_actual_size; i++) {
+    for (int j = 0; j < main_expected_size; j++) {
+      // All expected pass means the actual policy
+      // is more stricter than expected policy
+      if (TEE_SUCCESS !=
+          VerifyAttributes(actual_policy.main_attributes()[i],
+                           expected_policy.main_attributes()[j])) {
+        ELOG_ERROR("Verify policy: fail to verify main attributes");
+        return TEE_ERROR_RA_VERIFY_ATTR;
+      }
+    }
+  }
+
+  // policy.nested_policies.str_group_name/str_group_id
+  const kubetee::UnifiedAttestationNestedPolicies& actual_nested_policies =
+      actual_policy.nested_policies();
+  const kubetee::UnifiedAttestationNestedPolicies& expected_nested_policies =
+      expected_policy.nested_policies();
+  if (!IsStrEqual(kUaNestedGroupName, expected_nested_policies.str_group_name(),
+                  actual_nested_policies.str_group_name())) {
+    return TEE_ERROR_RA_VERIFY_NESTED_GROUP_NAME;
+  }
+  if (!IsStrEqual(kUaNestedGroupID, expected_nested_policies.str_group_id(),
+                  actual_nested_policies.str_group_id())) {
+    return TEE_ERROR_RA_VERIFY_NESTED_GROUP_ID;
+  }
+
+  // policy.nested_policies.policies
+  size_t sub_actual_size = actual_nested_policies.policies_size();
+  size_t sub_expected_size = expected_nested_policies.policies_size();
+  if (sub_actual_size != sub_expected_size) {
+    ELOG_ERROR("Verify policy: mismatch submodules size: %d/%d",
+               sub_actual_size, sub_expected_size);
+    return TEE_ERROR_RA_VERIFY_POLICY_SUB_SIZE;
+  }
+
+  // policy.nested_policies.policies.sub_attributes
+  for (int k = 0; k < sub_actual_size; k++) {
+    const kubetee::UnifiedAttestationNestedPolicy& actual_nested_policy =
+        actual_nested_policies.policies()[k];
+    const kubetee::UnifiedAttestationNestedPolicy& expected_nested_policy =
+        expected_nested_policies.policies()[k];
+    size_t actual_attr_size = actual_nested_policy.sub_attributes_size();
+    size_t expected_attr_size = expected_nested_policy.sub_attributes_size();
+    if (actual_attr_size > expected_attr_size) {
+      ELOG_ERROR("Verify policy: more actual sub attr size: %d/%d",
+                 actual_attr_size, expected_attr_size);
+      return TEE_ERROR_RA_VERIFY_POLICY_SUB_ATTR_SIZE;
+    }
+    for (int i = 0; i < actual_attr_size; i++) {
+      for (int j = 0; j < expected_attr_size; j++) {
+        // All expected pass means the actual policy
+        // is more stricter than expected policy
+        if (TEE_SUCCESS !=
+            VerifyAttributes(actual_nested_policy.sub_attributes()[i],
+                             expected_nested_policy.sub_attributes()[j])) {
+          ELOG_ERROR("Verify policy: fail to verify sub attributes");
+          return TEE_ERROR_RA_VERIFY_ATTR;
+        }
+      }
+    }
+  }
+
+  return TEE_SUCCESS;
+}
+
 TeeErrorCode AttestationVerifierInterface::VerifyMainAttester(
     const kubetee::UnifiedAttestationPolicy& policy) {
   TeeErrorCode ret = TEE_ERROR_RA_VERIFY_RULE_ENTRY_EMPTY;
@@ -203,14 +287,12 @@ TeeErrorCode AttestationVerifierInterface::VerifyAttributes(
   if (!IsStrMatch(kUaAttrNonce, expected.hex_nonce(), actual.hex_nonce())) {
     return TEE_ERROR_RA_VERIFY_ATTR_NONCE;
   }
+  if (!IsStrEqual(kUaAttrSpid, expected.hex_spid(), actual.hex_spid())) {
+    return TEE_ERROR_RA_VERIFY_ATTR_SPID_NAME;
+  }
   if (!IsIntNotLess(kUaAttrVerifiedTime, expected.str_verified_time(),
                     actual.str_verified_time())) {
     return TEE_ERROR_RA_VERIFY_ATTR_VERIFIED_TIME;
-  }
-  if (verify_spid_) {
-    if (!IsStrEqual(kUaAttrSpid, expected.hex_spid(), actual.hex_spid())) {
-      return TEE_ERROR_RA_VERIFY_ATTR_SPID_NAME;
-    }
   }
 
   return TEE_SUCCESS;

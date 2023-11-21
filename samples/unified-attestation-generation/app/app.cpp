@@ -53,6 +53,16 @@ int GenerateAuthReportJson(const std::string& report_type) {
     std::string policy_filename = "unified_attestation_auth_policy_";
     policy_filename.append(report_type + ".json");
     ret = kubetee::utils::FsWriteString(policy_filename, policy_json);
+
+    // To test the verify policy interface only
+    kubetee::UnifiedAttestationPolicy expected_policy;
+    expected_policy.CopyFrom(policy);
+    // make some changes
+    expected_policy.add_main_attributes()->CopyFrom(policy.main_attributes()[0]);
+    expected_policy.mutable_main_attributes(1)->clear_hex_ta_measurement();
+    TEE_CHECK_RETURN(UaVerifyPolicy(policy, expected_policy));
+    TEE_LOG_INFO("Verify policy successfully!");
+
   } while (0);
 
   TEE_CHECK_RETURN(ReeInstance::Finalize(tee_identity));
