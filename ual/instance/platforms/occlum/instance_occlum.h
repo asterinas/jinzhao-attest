@@ -1,8 +1,9 @@
-#ifndef UAL_INSTANCE_PLATFORMS_SGX_UNTRUSTED_UNTRUSTED_REE_SGX_H_
-#define UAL_INSTANCE_PLATFORMS_SGX_UNTRUSTED_UNTRUSTED_REE_SGX_H_
+#ifndef UAL_INSTANCE_PLATFORMS_OCCLUM_INSTANCE_OCCLUM_H_
+#define UAL_INSTANCE_PLATFORMS_OCCLUM_INSTANCE_OCCLUM_H_
 
 #include <string>
 
+#include "sgx/sgx_key.h"
 #include "sgx/sgx_urts.h"
 #include "sgx/sgx_utils.h"
 
@@ -12,8 +13,8 @@
 namespace kubetee {
 namespace attestation {
 
-// ReeInstanceSgx for generating REE instance for SGX
-class ReeInstanceSgx : public ReeInstanceInterface {
+// InstanceOcclum for managing tee instance in Occlum
+class InstanceOcclum : public ReeInstanceInterface {
  public:
   TeeErrorCode Initialize(const UaTeeInitParameters& param,
                           std::string* tee_identity) override;
@@ -33,13 +34,10 @@ class ReeInstanceSgx : public ReeInstanceInterface {
                           std::string* plain_str) override;
 
  private:
-  TeeErrorCode EnclaveIdToTeeIdentity(const sgx_enclave_id_t eid,
-                                      std::string* tee_identity);
-  TeeErrorCode TeeIdentityToEnclaveId(const std::string& tee_identity,
-                                      sgx_enclave_id_t* eid);
+  TeeErrorCode GetSealKey(std::string* seal_key, uint16_t key_policy);
 };
 
 }  // namespace attestation
 }  // namespace kubetee
 
-#endif  // UAL_INSTANCE_PLATFORMS_SGX_UNTRUSTED_UNTRUSTED_REE_SGX_H_
+#endif  // UAL_INSTANCE_PLATFORMS_OCCLUM_INSTANCE_OCCLUM_H_

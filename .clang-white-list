@@ -3,6 +3,7 @@ ual/utils
 ual/network
 ual/generation
 ual/verification
+ual/instance
 ual/include/utils
 ual/include/network
 ual/include/attestation

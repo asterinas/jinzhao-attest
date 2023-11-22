@@ -37,24 +37,23 @@ namespace attestation {
 class TeeInstanceSgx : public TeeInstanceInterface {
  public:
   TeeErrorCode GenerateAuthReport(
-    UaReportGenerationParameters* param,
-    kubetee::UnifiedAttestationAuthReport* auth) override;
-  TeeErrorCode ReeRun(
-    const kubetee::UnifiedFunctionParams& params,
-    const google::protobuf::Message& request,
-    google::protobuf::Message* response) override;
+      UaReportGenerationParameters* param,
+      kubetee::UnifiedAttestationAuthReport* auth) override;
+  TeeErrorCode ReeRun(const kubetee::UnifiedFunctionParams& params,
+                      const google::protobuf::Message& request,
+                      google::protobuf::Message* response) override;
   // The default way is bound, this is more secure
   TeeErrorCode SealData(const std::string& plain_str,
-    std::string* sealed_str,
-    bool tee_bound = true) override;
+                        std::string* sealed_str,
+                        bool tee_bound = true) override;
   TeeErrorCode UnsealData(const std::string& sealed_str,
-    std::string* plain_str) override;
+                          std::string* plain_str) override;
 
  private:
   TeeErrorCode SealSignerData(const std::string& plain_str,
-    std::string* sealed_str);
+                              std::string* sealed_str);
   TeeErrorCode SealEnclaveData(const std::string& plain_str,
-    std::string* sealed_str);
+                               std::string* sealed_str);
 
   const sgx_attributes_t attributes_ = {TSEAL_DEFAULT_FLAGSMASK, 0x0};
   const sgx_misc_select_t misc_select_ = TSEAL_DEFAULT_MISCMASK;

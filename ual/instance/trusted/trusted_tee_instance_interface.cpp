@@ -6,6 +6,6 @@
 
 namespace kubetee {
 namespace attestation {
-  // Nothing here
+// Nothing here
 }  // namespace attestation
 }  // namespace kubetee

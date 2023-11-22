@@ -13,6 +13,7 @@ targets:
           - app-sample-unified-attestation-generation
           - app-sample-unified-attestation-verification-untrusted
           - app-sample-unified-attestation-nested-report
+          - app-sample-unified-attestation-instance-ree
   - target: /etc/kubetee
     copy:
       - from: ../../deployment/conf/

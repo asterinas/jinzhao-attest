@@ -47,4 +47,5 @@ if [ "$ACTIONS" == "all" -o "$ACTIONS" == "run" ] ; then
   occlum run /bin/app-sample-unified-attestation-generation
   occlum run /bin/app-sample-unified-attestation-verification-untrusted
   occlum run /bin/app-sample-unified-attestation-nested-report
+  occlum run /bin/app-sample-unified-attestation-instance-ree
 fi

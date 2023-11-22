@@ -16,35 +16,29 @@
 extern "C" {
 #endif
 
-sgx_status_t ocall_UntrustedMemoryAlloc(
-            TeeErrorCode* ret,
-            size_t size,
-            char** buf);
+sgx_status_t ocall_UntrustedMemoryAlloc(TeeErrorCode* ret,
+                                        size_t size,
+                                        char** buf);
 
-sgx_status_t ocall_UntrustedMemoryFree(
-            TeeErrorCode* ret,
-            char** buf);
+sgx_status_t ocall_UntrustedMemoryFree(TeeErrorCode* ret, char** buf);
 
-sgx_status_t ocall_UntrustedReadBuf(
-            TeeErrorCode* ret,
-            const char *ubuf,
-            char *tbuf,
-            size_t count);
+sgx_status_t ocall_UntrustedReadBuf(TeeErrorCode* ret,
+                                    const char* ubuf,
+                                    char* tbuf,
+                                    size_t count);
 
-sgx_status_t ocall_UntrustedWriteBuf(
-            TeeErrorCode* ret,
-            char *ubuf,
-            const char *tbuf,
-            size_t count);
+sgx_status_t ocall_UntrustedWriteBuf(TeeErrorCode* ret,
+                                     char* ubuf,
+                                     const char* tbuf,
+                                     size_t count);
 
-sgx_status_t ocall_ReeRun(
-            TeeErrorCode* ret,
-            const char* params_buf,
-            size_t params_len,
-            const char *req_buf,
-            size_t req_len,
-            char** res_buf,
-            size_t* res_len);
+sgx_status_t ocall_ReeRun(TeeErrorCode* ret,
+                          const char* params_buf,
+                          size_t params_len,
+                          const char* req_buf,
+                          size_t req_len,
+                          char** res_buf,
+                          size_t* res_len);
 
 sgx_status_t ocall_UntrustGenerateAuthReport(TeeErrorCode* retval,
                                              const char* tee_identity,

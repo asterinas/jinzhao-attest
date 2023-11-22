@@ -52,6 +52,10 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_DESTROY_ENCLAVE_FAILED                   TEE_MK_ERROR(0x0E05)
 #define TEE_ERROR_DESTROY_EMPTY_ENCLAVE                    TEE_MK_ERROR(0x0E06)
 #define TEE_ERROR_INVALID_ENCLAVE_ID                       TEE_MK_ERROR(0x0E07)
+#define TEE_ERROR_SEAL_DATA                                TEE_MK_ERROR(0x0E08)
+#define TEE_ERROR_UNSEAL_DATA                              TEE_MK_ERROR(0x0E09)
+#define TEE_ERROR_SEAL_DATA_BUFFER_SIZE                    TEE_MK_ERROR(0x0E0A)
+#define TEE_ERROR_UNSEAL_DATA_BUFFER_SIZE                  TEE_MK_ERROR(0x0E0B)
 
 // Common::Crypto::Base64
 #define TEE_ERROR_CRYPTO_BASE64                            TEE_MK_ERROR(0x0110)
@@ -200,6 +204,7 @@ typedef int TeeErrorCode;
 #define TEE_ERROR_RA_GENERATE_OCCLUM_GET_QUOTE             TEE_MK_ERROR(0x1044)
 #define TEE_ERROR_RA_GENERATE_OCCLUM_QUOTE_LEN             TEE_MK_ERROR(0x1045)
 #define TEE_ERROR_RA_GENERATE_OCCLUM_DEVICE_BUSY           TEE_MK_ERROR(0x1046)
+#define TEE_ERROR_RA_GENERATE_OCCLUM_GET_SEAL_KEY          TEE_MK_ERROR(0x1047)
 
 #define TEE_ERROR_RA_GENERATE_CSV                          TEE_MK_ERROR(0x1050)
 #define TEE_ERROR_RA_GENERATE_CSV_REPORT_STRUCT            TEE_MK_ERROR(0x1051)

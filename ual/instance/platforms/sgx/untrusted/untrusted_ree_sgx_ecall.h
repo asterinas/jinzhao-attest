@@ -20,7 +20,7 @@ sgx_status_t ecall_TeeRun(uint64_t eid,
                           TeeErrorCode* ret,
                           const char* params_buf,
                           size_t params_len,
-                          const char *req_buf,
+                          const char* req_buf,
                           size_t req_len,
                           char** res_buf,
                           size_t* res_len) __attribute__((weak));

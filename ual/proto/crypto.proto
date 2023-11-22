@@ -39,3 +39,8 @@ message DigitalEnvelopeEncrypted {
   // The public key in RA report will verify this signature
   bytes plain_hash_sig = 4;
 }
+
+message UaSealedData {
+  SymmetricKeyEncrypted cipher = 1;
+  int64 key_policy = 2;
+}

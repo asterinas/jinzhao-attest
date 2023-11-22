@@ -95,7 +95,7 @@ UaReport* TeeInstance::FindReportByIdOrDefault(
 }
 
 TeeErrorCode TeeInstance::UpdateReportData(const std::string& hex_report_data,
-                                         const std::string& report_identity) {
+                                           const std::string& report_identity) {
   if (hex_report_data.size() > (2 * kSha256Size)) {
     TEE_LOG_ERROR("Too much report data");
     return TEE_ERROR_RA_TOO_MUCH_REPORT_DATA;
@@ -156,8 +156,8 @@ const kubetee::UnifiedAttestationAttributes& TeeInstance::AttesterAttr(
   return FindReportByIdOrDefault(report_identity)->attester_attr;
 }
 
-TeeErrorCode TeeInstance::UpdateReportCache(const UaReport& ua_report,
-                                            const std::string& report_identity) {
+TeeErrorCode TeeInstance::UpdateReportCache(
+    const UaReport& ua_report, const std::string& report_identity) {
   // Always delete the existed instance to avoid update field one by one
   UA_MUTEX_LOCK(&enclave_lock_);
 
@@ -178,7 +178,8 @@ TeeErrorCode TeeInstance::UpdateReportCache(const UaReport& ua_report,
   return TEE_SUCCESS;
 }
 
-TeeErrorCode TeeInstance::DeleteReportCache(const std::string& report_identity) {
+TeeErrorCode TeeInstance::DeleteReportCache(
+    const std::string& report_identity) {
   if (report_identity.empty()) {
     ELOG_ERROR("Empty indentity when delete report cache");
     return TEE_ERROR_RA_EMPTY_REPORT_IDENTITY;
@@ -227,14 +228,14 @@ TeeErrorCode TeeInstance::ReeRun(const std::string& function_name,
 }
 
 TeeErrorCode TeeInstance::SealData(const std::string& plain_str,
-    std::string* sealed_str,
-    bool tee_bound) {
+                                   std::string* sealed_str,
+                                   bool tee_bound) {
   TEE_CHECK_RETURN(Inner()->SealData(plain_str, sealed_str, tee_bound));
   return TEE_SUCCESS;
 }
 
 TeeErrorCode TeeInstance::UnsealData(const std::string& sealed_str,
-    std::string* plain_str) {
+                                     std::string* plain_str) {
   TEE_CHECK_RETURN(Inner()->UnsealData(sealed_str, plain_str));
   return TEE_SUCCESS;
 }
@@ -267,9 +268,9 @@ TeeErrorCode TeeInstanceIsInitialized() {
 }
 
 TeeErrorCode TeeInstanceUpdateReportData(const std::string& hex_report_data,
-                                       const std::string& report_identity) {
+                                         const std::string& report_identity) {
   return TeeInstance::GetInstance().UpdateReportData(hex_report_data,
-                                                   report_identity);
+                                                     report_identity);
 }
 
 const std::string& TeeInstanceReportData(const std::string& report_identity) {
@@ -280,7 +281,7 @@ TeeErrorCode TeeInstanceSaveEnclaveInfo(
     const UnifiedAttestationAttributes& attester_attr,
     const std::string& report_identity) {
   return TeeInstance::GetInstance().SaveEnclaveInfo(attester_attr,
-                                                  report_identity);
+                                                    report_identity);
 }
 
 const UnifiedAttestationAttributes& TeeInstanceGetEnclaveInfo(
@@ -291,7 +292,8 @@ const UnifiedAttestationAttributes& TeeInstanceGetEnclaveInfo(
 TeeErrorCode TeeInstanceUpdateReportCache(
     const kubetee::attestation::UaReport& ua_report,
     const std::string& report_identity) {
-  return TeeInstance::GetInstance().UpdateReportCache(ua_report, report_identity);
+  return TeeInstance::GetInstance().UpdateReportCache(ua_report,
+                                                      report_identity);
 }
 
 TeeErrorCode TeeInstanceDeleteReportCache(const std::string& report_identity) {

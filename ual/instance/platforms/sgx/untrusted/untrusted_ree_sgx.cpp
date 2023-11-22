@@ -15,8 +15,7 @@ namespace kubetee {
 namespace attestation {
 
 TeeErrorCode ReeInstanceSgx::EnclaveIdToTeeIdentity(const sgx_enclave_id_t eid,
-                                    std::string* tee_identity) {
-
+                                                    std::string* tee_identity) {
   if (eid == 0) {
     TEE_LOG_ERROR("Zero enclave id");
     return TEE_ERROR_ENCLAVE_NOTINITIALIZED;
@@ -26,8 +25,8 @@ TeeErrorCode ReeInstanceSgx::EnclaveIdToTeeIdentity(const sgx_enclave_id_t eid,
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReeInstanceSgx::TeeIdentityToEnclaveId(const std::string& tee_identity,
-                                    sgx_enclave_id_t* eid) {
+TeeErrorCode ReeInstanceSgx::TeeIdentityToEnclaveId(
+    const std::string& tee_identity, sgx_enclave_id_t* eid) {
   // Empty tee_identity string
   if (tee_identity.empty()) {
     TEE_LOG_ERROR("Empty TEE identity");
@@ -39,7 +38,7 @@ TeeErrorCode ReeInstanceSgx::TeeIdentityToEnclaveId(const std::string& tee_ident
     *eid = std::stoll(tee_identity);
   } catch (const std::exception& e) {
     TEE_LOG_ERROR("Invalid TEE identity");
-    return TEE_ERROR_INVALID_TEE_IDENTITY; 
+    return TEE_ERROR_INVALID_TEE_IDENTITY;
   }
 
   // Invalid converted enclave id
@@ -51,8 +50,8 @@ TeeErrorCode ReeInstanceSgx::TeeIdentityToEnclaveId(const std::string& tee_ident
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReeInstanceSgx::Initialize(
-    const UaTeeInitParameters& param, std::string* tee_identity) {
+TeeErrorCode ReeInstanceSgx::Initialize(const UaTeeInitParameters& param,
+                                        std::string* tee_identity) {
   // Try to create a enclave instance
   sgx_enclave_id_t eid = 0;
   sgx_status_t rc = sgx_create_enclave(param.trust_application.data(),
@@ -100,10 +99,9 @@ TeeErrorCode ReeInstanceSgx::TeeRun(const std::string& tee_identity,
   size_t res_len = 0;
   // Finally call the ecall function
   TeeErrorCode ret = TEE_ERROR_GENERIC;
-  sgx_status_t rc = ecall_TeeRun(eid, &ret,
-                                 params_str.data(), params_str.size(),
-                                 req_str.data(), req_str.size(),
-                                 &res_buf, &res_len);
+  sgx_status_t rc =
+      ecall_TeeRun(eid, &ret, params_str.data(), params_str.size(),
+                   req_str.data(), req_str.size(), &res_buf, &res_len);
   if ((TEE_ERROR_MERGE(ret, rc)) != TEE_SUCCESS) {
     TEE_LOG_ERROR("Fail to do ecall_TeeRun: 0x%x/0x%x", ret, rc);
     return TEE_ERROR_MERGE(ret, rc);
@@ -125,9 +123,8 @@ TeeErrorCode ReeInstanceSgx::TeeRun(const std::string& tee_identity,
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ReeInstanceSgx::TeePublicKey(
-    const std::string& tee_identity,
-    std::string* public_key) {
+TeeErrorCode ReeInstanceSgx::TeePublicKey(const std::string& tee_identity,
+                                          std::string* public_key) {
   char buf[kMaxPublicKeyLengh] = {0};
   int len = kMaxPublicKeyLengh;
   TeeErrorCode ret = 0;
@@ -139,6 +136,41 @@ TeeErrorCode ReeInstanceSgx::TeePublicKey(
     return TEE_ERROR_RA_GET_PUBLIC_KEY;
   }
   public_key->assign(buf, len);
+  return TEE_SUCCESS;
+}
+
+TeeErrorCode ReeInstanceSgx::SealData(const std::string& tee_identity,
+                                      const std::string& plain_str,
+                                      std::string* sealed_str,
+                                      bool tee_bound) {
+  kubetee::UnifiedFunctionGenericRequest req;
+  kubetee::UnifiedFunctionGenericResponse res;
+
+  std::string bound_str = tee_bound ? "true" : "false";
+  req.add_argv()->assign(plain_str);
+  req.add_argv()->assign(bound_str);
+  TEE_CHECK_RETURN(TeeRun(tee_identity, "TeeSealData", req, &res));
+  if (res.result_size() == 0) {
+    TEE_LOG_ERROR("Empty SealData response");
+    return TEE_ERROR_SEAL_DATA;
+  }
+  sealed_str->assign(res.result(0));
+  return TEE_SUCCESS;
+}
+
+TeeErrorCode ReeInstanceSgx::UnsealData(const std::string& tee_identity,
+                                        const std::string& sealed_str,
+                                        std::string* plain_str) {
+  kubetee::UnifiedFunctionGenericRequest req;
+  kubetee::UnifiedFunctionGenericResponse res;
+
+  req.add_argv()->assign(sealed_str);
+  TEE_CHECK_RETURN(TeeRun(tee_identity, "TeeUnsealData", req, &res));
+  if (res.result_size() == 0) {
+    TEE_LOG_ERROR("Empty UnsealData response");
+    return TEE_ERROR_UNSEAL_DATA;
+  }
+  plain_str->assign(res.result(0));
   return TEE_SUCCESS;
 }
 

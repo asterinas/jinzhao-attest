@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 project(kubetee-unified-attestation)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
+if(BUILD_MODE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g2")
+endif()
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/out)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/out)

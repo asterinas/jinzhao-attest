@@ -26,6 +26,7 @@
 #include "attestation/generation/core/generator_interface.h"
 #include "attestation/generation/ua_generation.h"
 #include "attestation/generation/unified_attestation_generation.h"
+#include "attestation/instance/unified_attestation_instance.h"
 #include "attestation/instance/untrusted_ree_instance.h"
 #include "attestation/instance/untrusted_ree_instance_interface.h"
 #include "attestation/instance/untrusted_unified_function.h"

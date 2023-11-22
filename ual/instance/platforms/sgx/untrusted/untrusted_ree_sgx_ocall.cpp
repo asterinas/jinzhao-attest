@@ -4,7 +4,7 @@
 #include "attestation/common/protobuf.h"
 #include "attestation/instance/untrusted_unified_function.h"
 
-// For ocall_UntrustGenerateAuthReport 
+// For ocall_UntrustGenerateAuthReport
 #include "attestation/generation/ua_generation.h"
 
 #include "utils/untrusted/untrusted_memory.h"
@@ -22,7 +22,9 @@ TeeErrorCode ocall_UntrustedMemoryFree(char** buf) {
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ocall_UntrustedReadBuf(const char* ubuf, char* tbuf, size_t count) {
+TeeErrorCode ocall_UntrustedReadBuf(const char* ubuf,
+                                    char* tbuf,
+                                    size_t count) {
   if (ubuf == NULL || tbuf == NULL || count == 0) {
     return TEE_ERROR_PARAMETERS;
   }
@@ -32,7 +34,9 @@ TeeErrorCode ocall_UntrustedReadBuf(const char* ubuf, char* tbuf, size_t count) 
   return TEE_SUCCESS;
 }
 
-TeeErrorCode ocall_UntrustedWriteBuf(char* ubuf, const char* tbuf, size_t count) {
+TeeErrorCode ocall_UntrustedWriteBuf(char* ubuf,
+                                     const char* tbuf,
+                                     size_t count) {
   if (ubuf == NULL || tbuf == NULL || count == 0) {
     return TEE_ERROR_PARAMETERS;
   }
@@ -88,12 +92,12 @@ TeeErrorCode ocall_ReeRun(const char* params_buf,
 }
 
 TeeErrorCode ocall_UntrustGenerateAuthReport(const char* tee_identity,
-                                    const char* report_type,
-                                    const char* report_hex_nonce,
-                                    const char* report_params,
-                                    char* auth_report_buf,
-                                    unsigned int auth_report_buf_size,
-                                    unsigned int* auth_report_len) {
+                                             const char* report_type,
+                                             const char* report_hex_nonce,
+                                             const char* report_params,
+                                             char* auth_report_buf,
+                                             unsigned int auth_report_buf_size,
+                                             unsigned int* auth_report_len) {
   UaReportGenerationParameters param;
   param.tee_identity = SAFESTR(tee_identity);
   param.report_type = SAFESTR(report_type);

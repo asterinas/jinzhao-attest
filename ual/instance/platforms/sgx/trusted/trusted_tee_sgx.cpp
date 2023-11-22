@@ -26,7 +26,8 @@ TeeErrorCode TeeInstanceSgx::GenerateAuthReport(
   // We must set report data in trusted code
   std::string user_data;
   std::string report_identity = param->others.str_report_identity();
-  if (!param->report_hex_nonce.empty() && !param->others.hex_user_data().empty()) {
+  if (!param->report_hex_nonce.empty() &&
+      !param->others.hex_user_data().empty()) {
     TEE_LOG_ERROR("Don't support both nonce and user data for SGX like TEE");
     return TEE_ERROR_RA_HAVE_BOTH_NONCE_AND_USER_DATA;
   } else if (!param->report_hex_nonce.empty()) {
@@ -108,10 +109,9 @@ TeeErrorCode TeeInstanceSgx::ReeRun(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode TeeInstanceSgx::SealData(
-    const std::string& plain_str,
-    std::string* sealed_str,
-    bool tee_bound) {
+TeeErrorCode TeeInstanceSgx::SealData(const std::string& plain_str,
+                                      std::string* sealed_str,
+                                      bool tee_bound) {
   if (tee_bound) {
     TEE_CHECK_RETURN(SealEnclaveData(plain_str, sealed_str));
   } else {
@@ -120,9 +120,8 @@ TeeErrorCode TeeInstanceSgx::SealData(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode TeeInstanceSgx::UnsealData(
-    const std::string& sealed_str,
-    std::string* plain_str) {
+TeeErrorCode TeeInstanceSgx::UnsealData(const std::string& sealed_str,
+                                        std::string* plain_str) {
   TEE_CHECK_EMPTY(sealed_str);
 
   const sgx_sealed_data_t* psealed =
@@ -141,9 +140,8 @@ TeeErrorCode TeeInstanceSgx::UnsealData(
   return TEE_SUCCESS;
 }
 
-TeeErrorCode TeeInstanceSgx::SealSignerData(
-    const std::string& plain_str,
-    std::string* sealed_str) {
+TeeErrorCode TeeInstanceSgx::SealSignerData(const std::string& plain_str,
+                                            std::string* sealed_str) {
   TEE_CHECK_EMPTY(plain_str);
 
   // Allocate the sealed buffer
@@ -162,11 +160,12 @@ TeeErrorCode TeeInstanceSgx::SealSignerData(
     return TEE_ERROR_CODE(ret);
   }
 
+  ELOG_DEBUG("SealSignerData, size=%d", sealed_size);
   return TEE_SUCCESS;
 }
 
 TeeErrorCode TeeInstanceSgx::SealEnclaveData(const std::string& plain_str,
-                                     std::string* sealed_str) {
+                                             std::string* sealed_str) {
   TEE_CHECK_EMPTY(plain_str);
 
   // Allocate the sealed buffer
@@ -185,7 +184,7 @@ TeeErrorCode TeeInstanceSgx::SealEnclaveData(const std::string& plain_str,
     ELOG_ERROR("Failed to seal data of enclave: 0x%x", ret);
     return TEE_ERROR_CODE(ret);
   }
-
+  ELOG_DEBUG("SealEnclaveData, size=%d", sealed_size);
   return TEE_SUCCESS;
 }
 

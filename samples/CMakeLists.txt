@@ -19,6 +19,7 @@ endif()
 message("SGXSSL INC: ${SGXSSL_INCLUDE_DIR}")
 # Only support the following samples for static building
 add_subdirectory(unified-attestation-verification-untrusted)
+add_subdirectory(unified-attestation-instance-ree)
 if(BUILD_STATIC STREQUAL "OFF")
     add_subdirectory(unified-attestation-generation)
     add_subdirectory(unified-attestation-report-convert)

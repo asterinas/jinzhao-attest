@@ -1,7 +1,7 @@
 #include <string>
 
-#include "./sgx_utils.h"
 #include "./sgx_edger8r.h"
+#include "./sgx_utils.h"
 
 #include "attestation/common/error.h"
 #include "attestation/common/log.h"
@@ -95,7 +95,7 @@ TeeErrorCode ecall_TeeRun(const char* params_buf,
 
   // check and register functions firstly if they are not registered
   using kubetee::attestation::TeeUnifiedFunctions;
-  TeeUnifiedFunctions& tufm = TeeUnifiedFunctions::Mgr(); 
+  TeeUnifiedFunctions& tufm = TeeUnifiedFunctions::Mgr();
   TEE_CHECK_RETURN(tufm.RegisterFunctions());
 
   // Check the tee_identity in function params
@@ -124,7 +124,7 @@ TeeErrorCode ecall_TeeRun(const char* params_buf,
   // Allocate the untrusted memory to return the response
   // !!! Need to free outside of enclave
   size_t res_size = res_str.size();
-  if (res_size > 2) { // ignore empty json string '{}'
+  if (res_size > 2) {  // ignore empty json string '{}'
     ELOG_DEBUG("UntrustedMemoryAlloc size: %ld", res_size);
     sgx_status_t sc = SGX_ERROR_UNEXPECTED;
     TeeErrorCode ret = TEE_ERROR_GENERIC;
@@ -167,7 +167,6 @@ TeeErrorCode ecall_UaGetPublicKey(char* public_key_buf,
   *publc_key_len = public_key.size();
   return TEE_SUCCESS;
 }
-
 
 #ifdef __cplusplus
 }

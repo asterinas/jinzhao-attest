@@ -73,29 +73,29 @@ class AttestationVerifierInterface {
   // Compare the attributes item
   static bool IsRequired(const char* name, const bool required);
   static bool IsStrEqual(const std::string& item_name,
-                  const std::string& expected_value,
-                  const std::string& actual_value,
-                  const bool required = false);
+                         const std::string& expected_value,
+                         const std::string& actual_value,
+                         const bool required = false);
   static bool IsStrMatch(const std::string& item_name,
-                  const std::string& expected_value,
-                  const std::string& actual_value,
-                  const bool required = false);
+                         const std::string& expected_value,
+                         const std::string& actual_value,
+                         const bool required = false);
   static bool IsHashEqual(const std::string& item_name,
-                   const std::string& plain_value,
-                   const std::string& hash_value,
-                   const bool required = false);
+                          const std::string& plain_value,
+                          const std::string& hash_value,
+                          const bool required = false);
   static bool IsBoolEqual(const std::string& item_name,
-                   const std::string& expected_value,
-                   const std::string& actual_value,
-                   const bool required = false);
+                          const std::string& expected_value,
+                          const std::string& actual_value,
+                          const bool required = false);
   static bool IsHexIntEqual(const std::string& item_name,
-                     const std::string& expected_value,
-                     const std::string& actual_value,
-                     const bool required = false);
+                            const std::string& expected_value,
+                            const std::string& actual_value,
+                            const bool required = false);
   static bool IsIntNotLess(const std::string& item_name,
-                    const std::string& expected_value,
-                    const std::string& actual_value,
-                    const bool required = false);
+                           const std::string& expected_value,
+                           const std::string& actual_value,
+                           const bool required = false);
   static bool StrToBool(const std::string& bool_str);
 };
 
