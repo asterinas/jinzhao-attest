@@ -79,6 +79,10 @@
 // For safe string construct function
 #define SAFESTR(s) (s) ? (s) : ""
 
+// For API management
+#define TEE_FUNCTION_DEPRECATED() \
+  tee_printf("[WARN][%s:%d] %s() is deprecated!\n", __FILE__, __LINE__, __FUNCTION__)
+
 // Define the user type of unified tee identity
 typedef std::string UaTeeIdentity;
 typedef char* UnifiedAttestationTeeIdentity;
