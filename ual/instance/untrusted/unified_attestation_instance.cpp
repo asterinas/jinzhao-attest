@@ -19,17 +19,17 @@ int UnifiedAttestationSealData(const char* tee_identity,
                                bool tee_bound) {
   TEE_CHECK_VALIDBUF(plain_buf, plain_size);
   TEE_CHECK_VALIDBUF(sealed_buf, *sealed_size);
-  std::string idenity_str;
+  std::string identity_str;
   if (tee_identity == NULL) {
-    idenity_str = kDummyTeeIdentity;
+    identity_str = kDummyTeeIdentity;
   } else {
-    idenity_str.assign(tee_identity);
+    identity_str.assign(tee_identity);
   }
 
   std::string plain_str(plain_buf, plain_size);
   std::string sealed_str;
   TEE_CHECK_RETURN(kubetee::attestation::ReeInstance::SealData(
-      tee_identity, plain_str, &sealed_str, tee_bound));
+      identity_str, plain_str, &sealed_str, tee_bound));
   if (*sealed_size <= sealed_str.size()) { //reserve one bytes for '\0'
      TEE_LOG_ERROR("Too smaller seal data out buffer: %d/%d", *sealed_size,
         sealed_str.size());
@@ -48,17 +48,17 @@ int UnifiedAttestationUnsealData(const char* tee_identity,
                                  unsigned int* plain_size) {
   TEE_CHECK_VALIDBUF(sealed_buf, sealed_size);
   TEE_CHECK_VALIDBUF(plain_buf, *plain_size);
-  std::string idenity_str;
+  std::string identity_str;
   if (tee_identity == NULL) {
-    idenity_str = kDummyTeeIdentity;
+    identity_str = kDummyTeeIdentity;
   } else {
-    idenity_str.assign(tee_identity);
+    identity_str.assign(tee_identity);
   }
 
   std::string sealed_str(sealed_buf, sealed_size);
   std::string plain_str;
   TEE_CHECK_RETURN(kubetee::attestation::ReeInstance::UnsealData(
-      tee_identity, sealed_str, &plain_str));
+      identity_str, sealed_str, &plain_str));
   if (*plain_size <= plain_str.size()) { //reserve one bytes for '\0'
      TEE_LOG_ERROR("Too smaller unseal data out buffer: %d/%d", *plain_size,
         plain_str.size());
