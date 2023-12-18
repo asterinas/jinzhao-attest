@@ -127,6 +127,8 @@ TeeErrorCode ReportConvert::BgcheckToPassport(
     TEE_CHECK_RETURN(HyperEnclaveBgcheckToPassPortReport(report));
   } else if (platform == kUaPlatformCsv) {
     TEE_CHECK_RETURN(CsvBgcheckToPassPortReport(report));
+  } else if (platform == kUaPlatformTdx) {
+    TEE_CHECK_RETURN(TdxBgcheckToPassPortReport(report));
   } else if (platform == kUaPlatformKunpeng) {
     TEE_CHECK_RETURN(KunpengBgcheckToPassPortReport(report));
   } else {

@@ -37,7 +37,7 @@ EXIT_ERROR() {
 }
 
 get_tee_environment() {
-    if [ -e "/dev/jailhouse" ] ; then
+    if [ -e "/dev/jailhouse" -o -e "/dev/hyperenclave" ] ; then
         echo -ne "HYPERENCLAVE"
     elif [ -e "/dev/sgx_enclave" -o -e "/dev/sgx/enclave" ] ; then
         echo -ne "SGX2"

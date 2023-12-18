@@ -22,12 +22,23 @@ int GenerateAuthReportJson(const std::string& report_type) {
     UaReportGenerationParameters report_param;
     report_param.tee_identity = tee_identity;
     report_param.report_type = report_type;
+    TEE_LOG_INFO("Report type: %s", report_type.c_str());
     // Both report nonce and user data use hex string
     // and will be decoded before saved in report.
     // In SGX liked TEE, they are saved into the same place,
     // So we cannot set them at the same tiime
     report_param.report_hex_nonce = "31323334";
     // report_param.others.set_hex_user_data("31323334");
+    // Cross test: use user public key for passport type
+    if (report_type == kUaReportTypePassport) {
+      std::string prvkey;
+      std::string pubkey;
+      kubetee::common::AsymmetricCrypto::GenerateKeyPair(&pubkey, &prvkey);
+      kubetee::common::DataBytes pubkey_hash(pubkey);
+      pubkey_hash.ToSHA256().ToHexStr().Void();
+      TEE_LOG_INFO("User public key hash: %s", pubkey_hash.GetStr().c_str());
+      report_param.others.set_pem_public_key(pubkey);
+    }
     std::string auth_json;
     ret = UaGenerateAuthReportJson(&report_param, &auth_json);
     if (ret != 0) {

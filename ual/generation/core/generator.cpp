@@ -46,7 +46,8 @@ TeeErrorCode AttestationGenerator::Initialize(const std::string& tee_identity) {
     TEE_LOG_DEBUG("TEE device for Occlum LibOS");
 #endif
 #ifdef UA_TEE_TYPE_HYPERENCLAVE
-  } else if (FsFileExists("/dev/jailhouse")) {
+  } else if (FsFileExists("/dev/jailhouse") ||
+             FsFileExists("/dev/hyperenclave")) {
     TEE_LOG_DEBUG("TEE device for HyperEnclave platform");
 #endif
 #ifdef UA_TEE_TYPE_SGX2

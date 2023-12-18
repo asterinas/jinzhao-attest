@@ -9,11 +9,6 @@ set(PROTO_FILES
 )
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${CMAKE_BINARY_DIR} ${PROTO_FILES})
 
-set(SAMPLEAPP app-sample-unified-attestation-instance-ree)
-set(SRCS
-    ${PROTO_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/app/app.cpp
-)
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -54,6 +49,11 @@ if(ENV_TYPE STREQUAL "SGXSDK")
 endif()  #  if(ENV_TYPE STREQUAL "SGXSDK")
 
 # Build the application for both SGXSDK/OCCLUM/VMTEE
+set(SAMPLEAPP app-sample-unified-attestation-instance-ree)
+set(SRCS
+    ${PROTO_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/app/app.cpp
+)
 if(ENV_TYPE STREQUAL "SGXSDK")
     add_untrusted_executable(
         ${SAMPLEAPP}
